@@ -10,6 +10,7 @@ $ip = $_SERVER['HTTP_CLIENT_IP']
         ?? $_SERVER['REMOTE_ADDR']);
 if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
     $city = $reader->get($ip);
+    var_dump($city);
     $names = $city['city']['names'];
     $timezone = $city['location']['time_zone'];
     $cityName = $name = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
