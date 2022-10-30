@@ -41,7 +41,7 @@ date_default_timezone_set($timezone);
                 const dateTime = zeroFill((now.getMonth() + 1)) + '/' + zeroFill(now.getUTCDate()) + '/' + now.getFullYear() + ' ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
 
                 // Display the date and time on the screen using div#date-time
-                document.getElementById('date-time').innerHTML = dateTime + ' in ' + '<?=$description?>'';
+                document.getElementById('date-time').innerHTML = dateTime + ' in ' + '<?=$description?>';
             }, 1000);
 
             function changeTimeZone(date, timeZone) {
