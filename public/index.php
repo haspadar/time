@@ -7,7 +7,7 @@ require_once '../config.php';
 $requestLocation = strtr($_SERVER['REQUEST_URI'], ['/' => '']);
 if ($requestLocation && $found = DB::queryFirstRow('SELECT * FROM cities WHERE ascii_name=%s', $requestLocation)) {
     $timezone = $found['timezone'];
-    $description = $found['name'] . ', ' . $found['country_name_en'] . ', timezone "' . $timezone;
+    $description = $found['name'] . ', ' . $found['country_name_en'] . ', timezone "' . $timezone . '"';
 } elseif ($requestLocation && $found = DB::queryFirstRow('SELECT * FROM cities WHERE country_name_en=%s', $requestLocation)) {
     $timezone = $found['timezone'];
     $description = $found['country_name_en'] . ', timezone "' . $timezone . '"';
