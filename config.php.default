@@ -1,0 +1,10 @@
+<?php
+
+require_once 'vendor/autoload.php';
+require_once 'meekrodb.php';
+
+DB::$user = '';
+DB::$password = '';
+DB::$dbName = 'time';
+DB::$encoding = 'utf8mb4';
+DB::$throw_exception_on_nonsql_error = true;
