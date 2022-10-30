@@ -12,11 +12,13 @@ if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
     $city = $reader->get($ip);
     $names = $city['city']['names'];
     $timezone = $city['location']['time_zone'];
+    $cityName = $name = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
+    $description = $cityName . ', ip ' . $ip;
 } else {
     $timezone = 'Europe/Kiev';
+    $description = explode('/', $timezone)[1];
 }
 
-$cityName = $name = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
 date_default_timezone_set($timezone);
 ?>
 <html>
@@ -39,7 +41,7 @@ date_default_timezone_set($timezone);
                 const dateTime = zeroFill((now.getMonth() + 1)) + '/' + zeroFill(now.getUTCDate()) + '/' + now.getFullYear() + ' ' + zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
 
                 // Display the date and time on the screen using div#date-time
-                document.getElementById('date-time').innerHTML = dateTime + ' in ' + "<?=$cityName?>" + ", timezone " + "<?=$timezone?>";
+                document.getElementById('date-time').innerHTML = dateTime + ' in ' + '<?=$description?>'';
             }, 1000);
 
             function changeTimeZone(date, timeZone) {
