@@ -13,7 +13,7 @@ if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
     $names = $city['city']['names'];
     $timezone = $city['location']['time_zone'];
     $cityName = $name = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
-    $description = $cityName . ', ip ' . $ip;
+    $description = $cityName . ', timezone "' . $timezone . '", ip ' . $ip;
 } else {
     $timezone = 'Europe/Kiev';
     $description = explode('/', $timezone)[1];
