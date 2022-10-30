@@ -1,20 +1,32 @@
 
+const interval = setInterval(() => {
+    $('.time').html(generateTime($('#timezone').val()));
+    $('.date').html(generateDate($('#timezone').val()) + ' in ' + $('#description').val());
+    updateLocationsTime();
+}, 1000);
+
+function updateLocationsTime() {
+    $('.location-time').each(function () {
+        $(this).html(generateTime($(this).data('timezone'), true))
+    });
+}
+
 // Function to format 1 in 01
 const zeroFill = n => {
     return ('0' + n).slice(-2);
 }
 
-// Creates interval
-const interval = setInterval(() => {
-    const now = changeTimeZone(new Date(), $('#timezone').val());
+function generateTime(timezone, ignoreSeconds) {
+    const now = changeTimeZone(new Date(), timezone);
     // Format date as in mm/dd/aaaa hh:ii:ss
-    const time = zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + ':' + zeroFill(now.getSeconds());
-    const date = zeroFill(now.getUTCDate()) + '.' + zeroFill((now.getMonth() + 1)) + '.' + now.getFullYear();
+    return zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + (ignoreSeconds ? '' : ':' + zeroFill(now.getSeconds()));
+}
 
-    // Display the date and time on the screen using div#date-time
-    $('.time').html(time);
-    $('.date').html(date + ' in ' + $('#description').val());
-}, 1000);
+function generateDate(timezone) {
+    const now = changeTimeZone(new Date(), timezone);
+
+    return zeroFill(now.getUTCDate()) + '.' + zeroFill((now.getMonth() + 1)) + '.' + now.getFullYear();
+}
 
 function changeTimeZone(date, timeZone) {
     if (typeof date === 'string') {
@@ -33,6 +45,7 @@ function changeTimeZone(date, timeZone) {
 }
 
 $( ".location" ).autocomplete({
+    html: true,
     source: function(request, response) {
         $.ajax({
             url: "/locations.php",
@@ -41,14 +54,24 @@ $( ".location" ).autocomplete({
             data: {
                 search: request.term
             },
-            success: function( data ) {
-                response(data);
+            html: true,
+            success: function(data) {
+                // response(data);
+                response($.map(data, function (item)
+                {
+                    return {
+                        label: item.label + '<span class="location-time" data-timezone="' + item.timezone + '"></span>',
+                        value: item.value,
+                        url: item.url
+                    }
+                }));
+                updateLocationsTime();
             }
         });
     },
     select: function (event, ui) {
-        $('.location').val(ui.item.label); // display the selected text
-        document.location = '/' + ui.item.label;
+        $('.location').val(ui.item.label.split('<span')[0]); // display the selected text
+        document.location = '/' + ui.item.url;
         // $('#selectedpost_id').val(ui.item.value); // save selected id to input
         return false;
     }
