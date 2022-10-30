@@ -7,10 +7,10 @@ require_once '../config.php';
 $requestLocation = strtr($_SERVER['REQUEST_URI'], ['/' => '']);
 if ($requestLocation && $found = DB::queryFirstRow('SELECT * FROM cities WHERE ascii_name=%s', $requestLocation)) {
     $timezone = $found['timezone'];
-    $description = $found['name'] . ', ' . $found['country_name_en'] . ', timezone "' . $timezone . '"';
+    $description = $found['name'] . ', ' . $found['country_name_en'] . ', timezone ' . $timezone;
 } elseif ($requestLocation && $found = DB::queryFirstRow('SELECT * FROM cities WHERE country_name_en=%s', $requestLocation)) {
     $timezone = $found['timezone'];
-    $description = $found['country_name_en'] . ', timezone "' . $timezone . '"';
+    $description = $found['country_name_en'] . ', timezone ' . $timezone;
 } else {
     $reader = new Reader('../GeoLite2-City.mmdb');
     $ip = $_SERVER['HTTP_CLIENT_IP']
@@ -22,7 +22,7 @@ if ($requestLocation && $found = DB::queryFirstRow('SELECT * FROM cities WHERE a
         $timezone = $city['location']['time_zone'];
         $cityName = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
         $country = $city['country']['names']['en'] ?? $city['country']['names'][0] ?? '';
-        $description = $cityName . ', ' . $country . ', timezone "' . $timezone . '", ip ' . $ip;
+        $description = $cityName . ', ' . $country . ', timezone ' . $timezone . ', ip ' . $ip;
     } else {
         $timezone = 'Europe/Kiev';
         $description = explode('/', $timezone)[1];
