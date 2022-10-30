@@ -11,14 +11,12 @@ $ip = $_SERVER['HTTP_CLIENT_IP']
 if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
     $city = $reader->get($ip);
     $names = $city['city']['names'];
-    var_dump($names);
     $timezone = $city['location']['time_zone'];
 } else {
     $timezone = 'Europe/Kiev';
 }
 
-$cityName = isset($names) ? $names[0] : explode('/', $timezone)[1];
-
+$cityName = $name = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
 date_default_timezone_set($timezone);
 ?>
 <html>
