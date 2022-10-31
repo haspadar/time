@@ -32,6 +32,7 @@ date_default_timezone_set($time->getTimezone());
 <hr>
     Sunrise: <?=$time->getSunrise()->format('H:i')?>
     Sunset: <?=$time->getSunset()->format('H:i')?>
+    <div><?=$time->getDstDescription()?></div>
 <hr>
     <ul>
     <?php foreach ([

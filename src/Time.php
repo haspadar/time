@@ -2,6 +2,7 @@
 
 namespace Time;
 
+use Cassandra\Date;
 use MaxMind\Db\Reader;
 
 class Time
@@ -115,6 +116,43 @@ class Time
         $sunInfo = $this->getSunInfo();
 
         return $this->getDateTime()->setTimestamp($sunInfo['sunset']);
+    }
+
+    public function getDstDescription(): string
+    {
+        $transitions = (new \DateTimeZone($this->getTimezone()))->getTransitions();
+        $fromDateTime = ((new \DateTime()))->modify('-1 WEEK');
+        $toDateTime = ((new \DateTime()))->modify('+1 WEEK');
+        if (is_array($transitions) && $this->getCity()) {
+            foreach ($transitions as $transition) {
+                $transitionTime = new \DateTime($transition['time']);
+                if ($transitionTime >= $fromDateTime && $transitionTime <= $toDateTime) {
+                    if ($transitionTime < new \DateTime() && $transition['isdst']) {
+                        return $this->getCity()
+                            . ' switched to daylight time at '
+                            . $transitionTime->format('H:i')
+                            . ' on ' . $transitionTime->format('d M') . '. The time was set one hour forward.';
+                    } elseif ($transitionTime < new \DateTime()&& !$transition['isdst']) {
+                        return $this->getCity()
+                            . ' switched to standard time at '
+                            . $transitionTime->format('H:i')
+                            . ' on ' . $transitionTime->format('d M') . '. The time was set one hour back.';
+                    } elseif ($transitionTime > new \DateTime() && $transition['isdst']) {
+                        return $this->getCity()
+                            . ' will be switched to daylight time at '
+                            . $transitionTime->format('H:i')
+                            . ' on ' . $transitionTime->format('d M') . '. The time will be set one hour forward.';
+                    } elseif ($transitionTime > new \DateTime()&& !$transition['isdst']) {
+                        return $this->getCity()
+                            . ' will be switched to standard time at '
+                            . $transitionTime->format('H:i')
+                            . ' on ' . $transitionTime->format('d M') . '. The time will be set one hour back.';
+                    }
+                }
+            }
+        }
+
+        return '';
     }
 
     private function getSunInfo()
