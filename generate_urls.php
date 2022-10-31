@@ -18,39 +18,55 @@ foreach ($countriesWithSingleTimezone as $country) {
     }
 }
 
-$capitals = DB::query('SELECT id, name, country_name_en, timezone, admin1_code, country_code FROM cities WHERE feature_code="PPLC"');
+$capitals = DB::query('SELECT id, name, country_name_en, timezone, admin1_code, country_code, coordinates FROM cities WHERE feature_code="PPLC"');
 foreach ($capitals as $capital) {
+    $countryUrl = str_replace(' ', '_', $capital['country_name_en']);;
+    DB::update('urls', ['coordinates' => $capital['coordinates']], 'url = %s', $countryUrl);
     $url = generateUrl([$capital['name']]);
     if (!($found = DB::queryFirstRow('SELECT * FROM urls WHERE url = %s', $url))) {
         DB::insert('urls', [
             'country' => $capital['country_name_en'],
+            'city' => $capital['name'],
             'timezone' => $capital['timezone'],
             'url' => $url,
             'title' => generateTitle([$capital['name'], $capital['country_name_en']]),
-            'city_id' => $capital['id']
+            'city_id' => $capital['id'],
+            'coordinates' => $capital['coordinates']
         ]);
     } elseif ($found['country'] != $capital['country_name_en']) {
         $url = generateAdminCodeUrl($capital);
         DB::insert('urls', [
             'country' => $capital['country_name_en'],
+            'city' => $capital['name'],
             'timezone' => $capital['timezone'],
             'url' => $url,
             'title' => generateAdminCodeTitle($capital),
-            'city_id' => $capital['id']
+            'city_id' => $capital['id'],
+            'coordinates' => $capital['coordinates']
         ]);
     }
 }
 
-$cities = DB::query('SELECT id, name, country_name_en, timezone, admin1_code, country_code FROM cities WHERE feature_code<>"PPLC"');
+$cities = DB::query('SELECT id, name, country_name_en, timezone, admin1_code, country_code, coordinates FROM cities WHERE feature_code<>"PPLC"');
 foreach ($cities as $city) {
-    $url = generateAdminCodeUrl($city);
+    $count = DB::queryFirstField('SELECT COUNT(*) FROM cities WHERE country_name_en=%s AND name=%s', $city['country_name_en'], $city['name']);
+    if ($count == 1) {
+        $url = generateUrl([$city['name'], $city['country_name_en']]);
+        $title = generateTitle([$city['name'], $city['country_name_en']]);
+    } else {
+        $url = generateAdminCodeUrl($city);
+        $title = generateAdminCodeTitle($city);
+    }
+    
     if (!($found = DB::queryFirstRow('SELECT * FROM urls WHERE url = %s', $url))) {
         DB::insert('urls', [
             'country' => $city['country_name_en'],
+            'city' => $city['name'],
             'timezone' => $city['timezone'],
-            'title' => generateAdminCodeTitle($city),
+            'title' => $title,
             'url' => $url,
-            'city_id' => $city['id']
+            'city_id' => $city['id'],
+            'coordinates' => $city['coordinates']
         ]);
     } elseif ($found['country'] != $city['country_name_en']) {
         echo 'Ignored url ' . $url . ': already exists for ' . $found['country'] . PHP_EOL;

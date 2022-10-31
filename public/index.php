@@ -1,45 +1,51 @@
 <?php
 
-use MaxMind\Db\Reader;
-
 require_once '../config.php';
 
-$requestUrl = strtr($_SERVER['REQUEST_URI'], ['/' => '']);
-if ($requestUrl && $foundUrl = DB::queryFirstRow('SELECT * FROM urls WHERE url=%s', $requestUrl)) {
-    $timezone = $foundUrl['timezone'];
-    $description = $foundUrl['title'] . ', timezone ' . $timezone;
-} else {
-    $reader = new Reader('../GeoLite2-City.mmdb');
-    $ip = $_SERVER['HTTP_CLIENT_IP'] ?? ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR']);
-    if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
-        $city = $reader->get($ip);
-        $names = $city['city']['names'];
-        $timezone = $city['location']['time_zone'];
-        $cityName = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
-        $country = $city['country']['names']['en'] ?? $city['country']['names'][0] ?? '';
-        $description = $cityName . ', ' . $country . ', timezone ' . $timezone . ', ip ' . $ip;
-    } else {
-        $timezone = 'Europe/Kiev';
-        $description = explode('/', $timezone)[1];
-    }
-}
-
-date_default_timezone_set($timezone);
+$time = new \Time\Time(
+    strtr($_SERVER['REQUEST_URI'], ['/' => '']),
+    $_SERVER['HTTP_CLIENT_IP'] ?? ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'])
+);
+date_default_timezone_set($time->getTimezone());
 ?>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
     <link rel="stylesheet" href="/jquery-ui.css">
     <link rel="stylesheet" href="/time.css">
 
-    <title>Update Time</title>
+    <title>
+        Time in <?=$time->getUrl()['city'] ?: $time->getUrl()['country']?>: <?=$time->getDateTime()->format('H:i')?>
+    </title>
 </head>
 <body>
-<input type="hidden" id="timezone" value="<?=$timezone?>">
-<input type="hidden" id="description" value="<?=$description?>">
-<input type="text" class="location" placeholder="Location" value="<?=$foundUrl['title'] ?? ''?>">
+<input type="hidden" id="timezone" value="<?=$time->getTimezone()?>">
+<input type="hidden" id="description" value="<?=$time->getDescription()?>">
+<input type="text" class="location" placeholder="Location" value="<?=$time->getUrl() ? $time->getUrl()['title'] : ''?>">
 
-    <div class="time"></div>
-    <div class="date"></div>
+    <div class="time">...</div>
+    <div class="date">...</div>
+
+<hr>
+    Sunrise: <?=$time->getSunrise()->format('H:i')?>
+    Sunset: <?=$time->getSunset()->format('H:i')?>
+<hr>
+    <ul>
+    <?php foreach ([
+            ['city' => 'Tokyo', 'timezone' => 'Asia/Tokyo'],
+            ['city' => 'Beijing', 'timezone' => 'Asia/Shanghai'],
+            ['city' => 'Kyiv', 'timezone' => 'Europe/Kiev'],
+            ['city' => 'Paris', 'timezone' => 'Europe/Paris'],
+            ['city' => 'London', 'timezone' => 'Europe/London'],
+            ['city' => 'New York', 'timezone' => 'America/New_York'],
+            ['city' => 'Los Angeles', 'timezone' => 'America/Los_Angeles'],
+        ] as $location) :?>
+        <li>Time in <?=$location['city']?>: <span class="location-time" data-timezone="<?=$location['timezone']?>">
+                <?=$time->getDateTime()->format('H:i')?>
+            </span>
+        </li>
+    <?php endforeach;?>
+    </ul>
+
     <script src="/jquery.min.js"/></script>
     <script src="/jquery-ui.js"/></script>
     <script src="/jquery.ui.autocomplete.html.js"/></script>

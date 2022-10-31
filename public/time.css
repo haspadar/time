@@ -14,7 +14,7 @@ body {
     font-size: 30px;
 }
 
-.location-time {
+.autocomplete-time {
     float: right;
     text-align: right;
     font-size: small;
