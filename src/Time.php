@@ -3,6 +3,7 @@
 namespace Time;
 
 use Cassandra\Date;
+use http\Encoding\Stream\Debrotli;
 use MaxMind\Db\Reader;
 
 class Time
@@ -104,6 +105,12 @@ class Time
         return (new \DateTime())->setTimezone(new \DateTimeZone($this->timezone));
     }
 
+    public function getDayLength(): string
+    {
+        $diff = $this->getSunset()->getTimestamp() - $this->getSunrise()->getTimestamp();
+        return floor($diff / 3600) . "h " . floor(($diff % 3600) / 60) . "s";
+    }
+
     public function getSunrise(): \DateTime
     {
         $sunInfo = $this->getSunInfo();
@@ -127,7 +134,6 @@ class Time
             foreach ($transitions as $transition) {
                 $transitionTime = (new \DateTime($transition['time']))->setTimezone(new \DateTimeZone($this->getTimezone()));
                 if ($transitionTime >= $fromDateTime && $transitionTime <= $toDateTime) {
-//                    var_dump($transition);
                     if ($transitionTime < new \DateTime() && $transition['isdst']) {
                         return $this->getCity()
                             . ' switched to daylight time at '
