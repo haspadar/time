@@ -8,7 +8,13 @@ const interval = setInterval(() => {
     $('.time').html(generateTime($('#timezone').val()));
     $('.date').html(generateDate($('#timezone').val()) + ' in ' + $('#description').val());
     updateLocationsTime('.location-time');
+    updateTitle();
 }, 1000);
+
+function updateTitle() {
+    const title = $(title).text().split(':')[0];
+    $('title').html(title + ': ' + generateTime($(this).data('timezone'), true));
+}
 
 function updateLocationsTime(selector) {
     $(selector).each(function () {

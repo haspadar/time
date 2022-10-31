@@ -3,7 +3,7 @@
 require_once '../config.php';
 
 $time = new \Time\Time(
-    strtr($_SERVER['REQUEST_URI'], ['/' => '']),
+    strtr(htmlentities($_SERVER['REQUEST_URI']), ['/' => '']),
     $_SERVER['HTTP_CLIENT_IP'] ?? ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'])
 );
 date_default_timezone_set($time->getTimezone());
@@ -13,7 +13,7 @@ date_default_timezone_set($time->getTimezone());
     <link rel="stylesheet" href="/jquery-ui.css">
     <link rel="stylesheet" href="/time.css">
 
-    <title>
+    <title data-timezone="<?=$time->getTimezone()?>">
         Time in <?=$time->getUrl()['city'] ?: $time->getUrl()['country']?>: <?=$time->getDateTime()->format('H:i')?>
     </title>
 </head>

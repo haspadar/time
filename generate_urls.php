@@ -57,7 +57,7 @@ foreach ($cities as $city) {
         $url = generateAdminCodeUrl($city);
         $title = generateAdminCodeTitle($city);
     }
-    
+
     if (!($found = DB::queryFirstRow('SELECT * FROM urls WHERE url = %s', $url))) {
         DB::insert('urls', [
             'country' => $city['country_name_en'],
