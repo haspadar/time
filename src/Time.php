@@ -121,12 +121,13 @@ class Time
     public function getDstDescription(): string
     {
         $transitions = (new \DateTimeZone($this->getTimezone()))->getTransitions();
-        $fromDateTime = ((new \DateTime()))->modify('-1 WEEK');
-        $toDateTime = ((new \DateTime()))->modify('+1 WEEK');
+        $fromDateTime = (new \DateTime())->setTimezone(new \DateTimeZone($this->getTimezone()))->modify('-1 WEEK');
+        $toDateTime = (new \DateTime())->setTimezone(new \DateTimeZone($this->getTimezone()))->modify('+1 WEEK');
         if (is_array($transitions) && $this->getCity()) {
             foreach ($transitions as $transition) {
-                $transitionTime = new \DateTime($transition['time']);
+                $transitionTime = (new \DateTime($transition['time']))->setTimezone(new \DateTimeZone($this->getTimezone()));
                 if ($transitionTime >= $fromDateTime && $transitionTime <= $toDateTime) {
+//                    var_dump($transition);
                     if ($transitionTime < new \DateTime() && $transition['isdst']) {
                         return $this->getCity()
                             . ' switched to daylight time at '
@@ -135,7 +136,7 @@ class Time
                     } elseif ($transitionTime < new \DateTime()&& !$transition['isdst']) {
                         return $this->getCity()
                             . ' switched to standard time at '
-                            . $transitionTime->format('H:i')
+                            . $transitionTime->modify('+1 HOUR')->format('H:i')
                             . ' on ' . $transitionTime->format('d M') . '. The time was set one hour back.';
                     } elseif ($transitionTime > new \DateTime() && $transition['isdst']) {
                         return $this->getCity()
@@ -145,7 +146,7 @@ class Time
                     } elseif ($transitionTime > new \DateTime()&& !$transition['isdst']) {
                         return $this->getCity()
                             . ' will be switched to standard time at '
-                            . $transitionTime->format('H:i')
+                            . $transitionTime->modify('+1 HOUR')->format('H:i')
                             . ' on ' . $transitionTime->format('d M') . '. The time will be set one hour back.';
                     }
                 }
