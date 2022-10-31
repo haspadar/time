@@ -14,7 +14,11 @@ date_default_timezone_set($time->getTimezone());
     <link rel="stylesheet" href="/time.css">
 
     <title data-timezone="<?=$time->getTimezone()?>">
-        Time in <?=$time->getUrl()['city'] ?: $time->getUrl()['country']?>: <?=$time->getDateTime()->format('H:i')?>
+        <?php if ($time->getUrl()) :?>
+            Time in <?=$time->getUrl()['city'] ?: $time->getUrl()['country']?>: <?=$time->getDateTime()->format('H:i')?>
+        <?php else :?>
+            Local time
+        <?php endif;?>
     </title>
 </head>
 <body>
