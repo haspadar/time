@@ -23,6 +23,14 @@ class Time
      * @var mixed
      */
     private $longitude = '30.523333';
+    /**
+     * @var mixed|string
+     */
+    protected $city;
+    /**
+     * @var mixed|string
+     */
+    private $country;
 
     public function __construct(string $locationUrl, string $ip)
     {
@@ -31,6 +39,8 @@ class Time
             $this->latitude = floatval(explode(',', $this->url['coordinates'])[0]);
             $this->longitude = floatval(explode(',', $this->url['coordinates'])[1]);
             $this->description = $this->url['title'];
+            $this->city = $this->url['city'];
+            $this->country = $this->url['country'];
         } else {
             $reader = new Reader('../GeoLite2-City.mmdb');
             if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
@@ -38,7 +48,9 @@ class Time
                 $names = $city['city']['names'];
                 $this->timezone = $city['location']['time_zone'];
                 $cityName = $names[0] ?? $names['en'] ?? explode('/', $this->timezone)[1];
+                $this->city = $cityName;
                 $country = $city['country']['names']['en'] ?? $city['country']['names'][0] ?? '';
+                $this->country = $country;
                 $this->description = $cityName . ', ' . $country;
                 $this->latitude = $city['location']['latitude'];
                 $this->longitude = $city['location']['latitude'];
@@ -112,5 +124,21 @@ class Time
             $this->getLatitude(),
             $this->getLongitude()
         );
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getCity()
+    {
+        return $this->city;
     }
 }
