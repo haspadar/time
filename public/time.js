@@ -25,7 +25,7 @@ function updateLocationsTime(selector) {
 
 function generateTime(timezone, ignoreSeconds) {
     const now = changeTimeZone(new Date(), timezone);
-    // Format date as in mm/dd/aaaa hh:ii:ss
+
     return zeroFill(now.getHours()) + ':' + zeroFill(now.getMinutes()) + (ignoreSeconds ? '' : ':' + zeroFill(now.getSeconds()));
 }
 
@@ -63,11 +63,9 @@ $( ".location" ).autocomplete({
             },
             html: true,
             success: function(data) {
-                // response(data);
-                response($.map(data, function (item)
-                {
+                response($.map(data, function (item) {
                     return {
-                        label: item.label + '<span class="location-time autocomplete-time" data-timezone="' + item.timezone + '"></span>',
+                        label: '<div>' + item.label + '</div><div class="location-time autocomplete-time" data-timezone="' + item.timezone + '"></div>',
                         value: item.value,
                         url: item.url
                     }
@@ -77,9 +75,9 @@ $( ".location" ).autocomplete({
         });
     },
     select: function (event, ui) {
-        $('.location').val(ui.item.label.split('<span')[0]); // display the selected text
+        $('.location').val(ui.item.label.split('<div')[0]); // display the selected text
         document.location = '/' + ui.item.url;
-        // $('#selectedpost_id').val(ui.item.value); // save selected id to input
+
         return false;
     }
 });
