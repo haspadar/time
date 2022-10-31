@@ -14,7 +14,7 @@ const interval = setInterval(() => {
 function updateTitle() {
     let $title = $('title');
     let title = $.trim($title.text().split(':')[0]);
-    $title.text(title + ': ' + generateTime($(this).data('timezone'), true));
+    $title.text(title + ': ' + generateTime($title.data('timezone'), true));
 }
 
 function updateLocationsTime(selector) {
