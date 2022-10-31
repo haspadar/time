@@ -33,6 +33,8 @@ date_default_timezone_set($time->getTimezone());
     Sunrise: <?=$time->getSunrise()->format('H:i')?>
     Sunset: <?=$time->getSunset()->format('H:i')?>
     Day Length: <?=$time->getDayLength()?>
+    UTC offet: <?=$time->getUtcOffset()?> hours
+    Timezone: <?=$time->getTimezone()?>
     <div><?=$time->getDstDescription()?></div>
 <hr>
     <ul>

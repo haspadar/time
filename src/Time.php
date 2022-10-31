@@ -105,6 +105,11 @@ class Time
         return (new \DateTime())->setTimezone(new \DateTimeZone($this->timezone));
     }
 
+    public function getUtcOffset(): int
+    {
+        return $this->getDateTime()->format('Z') / 3600;
+    }
+
     public function getDayLength(): string
     {
         $diff = $this->getSunset()->getTimestamp() - $this->getSunrise()->getTimestamp();
