@@ -39,7 +39,9 @@ class WhatTime
         $reader = new Reader('../GeoLite2-City.mmdb');
         $geoIp = $reader->get($ip);
         $names = $geoIp['city']['names'];
-        $timezone = $geoIp['location']['time_zone'];
+        $timezone = strtr($geoIp['location']['time_zone'], [
+            'Europe/Kyiv' => 'Europe/Kiev'
+        ]);
         $cityName = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
         if (($url = \DB::queryFirstRow('SELECT * FROM urls WHERE city=%s AND timezone=%s', $cityName, $timezone))
             || ($url = \DB::queryFirstRow('SELECT * FROM urls WHERE timezone=%s AND is_capital=1', $timezone))
