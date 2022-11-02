@@ -142,7 +142,7 @@ date_default_timezone_set($time->getTimezone());
                                 <div id="map"
                                      data-latitude="<?=$time->getLatitude()?>"
                                      data-longitude="<?=$time->getLongitude()?>"
-                                     data-accuracy="15"
+                                     data-accuracy="5"
                                 ></div>
                             </div>
                         <?php endif;?>

@@ -1,7 +1,7 @@
 <?php
 require_once '../config.php';
 $search = trim(htmlspecialchars($_REQUEST['search']));
-$cities = DB::query('SELECT * FROM urls WHERE title LIKE %s LIMIT 5', $search . '%');
+$cities = DB::query('SELECT * FROM urls WHERE title LIKE %s LIMIT 5', '%' . $search . '%');
 $json = [];
 foreach ($cities as $city) {
     $json[] = [
