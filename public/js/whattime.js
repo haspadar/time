@@ -31,8 +31,18 @@ function generateTime(timezone, ignoreSeconds) {
 
 function generateDate(timezone) {
     const now = changeTimeZone(new Date(), timezone);
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    return zeroFill(now.getUTCDate()) + '.' + zeroFill((now.getMonth() + 1)) + '.' + now.getFullYear();
+    return dayNames[now.getDay()]
+        + ', '
+        + zeroFill(now.getUTCDate() + 1)
+        + ' '
+        + monthNames[zeroFill(now.getMonth())]
+        + ' '
+        + now.getFullYear();
 }
 
 function changeTimeZone(date, timeZone) {
@@ -81,3 +91,17 @@ $( ".location" ).autocomplete({
         return false;
     }
 });
+
+
+
+let $map = $('#map');
+if ($map && $map.length) {
+    let latitude = $map.data('latitude');
+    let longitude = $map.data('longitude');
+    let accuracy = $map.data('accuracy');
+    let map = L.map('map').setView([latitude, longitude], accuracy);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    L.marker([latitude, longitude]).addTo(map);
+}

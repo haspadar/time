@@ -1,108 +1,62 @@
 <?php
 
-namespace Time;
+namespace WhatTime;
 
-use Cassandra\Date;
 use http\Encoding\Stream\Debrotli;
 use MaxMind\Db\Reader;
 
 class Time
 {
-    private $url;
-    /**
-     * @var mixed
-     */
-    private $timezone = 'Europe/Kiev';
-    /**
-     * @var mixed
-     */
-    private $description;
-    /**
-     * @var mixed
-     */
-    private $latitude = '50.450001';
-    /**
-     * @var mixed
-     */
-    private $longitude = '30.523333';
-    /**
-     * @var mixed|string
-     */
-    protected $city;
-    /**
-     * @var mixed|string
-     */
-    private $country;
-
-    public function __construct(string $locationUrl, string $ip)
+    public function __construct(private array $url)
     {
-        if ($locationUrl && $this->url = \DB::queryFirstRow('SELECT * FROM urls WHERE url=%s', $locationUrl)) {
-            $this->timezone = $this->url['timezone'];
-            $this->latitude = floatval(explode(',', $this->url['coordinates'])[0]);
-            $this->longitude = floatval(explode(',', $this->url['coordinates'])[1]);
-            $this->description = $this->url['title'];
-            $this->city = $this->url['city'];
-            $this->country = $this->url['country'];
-        } else {
-            $reader = new Reader('../GeoLite2-City.mmdb');
-            if (filter_var($ip, FILTER_VALIDATE_IP) && $ip != '::1') {
-                $city = $reader->get($ip);
-                $names = $city['city']['names'];
-                $this->timezone = $city['location']['time_zone'];
-                $cityName = $names[0] ?? $names['en'] ?? explode('/', $this->timezone)[1];
-                $this->city = $cityName;
-                $country = $city['country']['names']['en'] ?? $city['country']['names'][0] ?? '';
-                $this->country = $country;
-                $this->description = $cityName . ', ' . $country;
-                $this->latitude = $city['location']['latitude'];
-                $this->longitude = $city['location']['latitude'];
-            }
-        }
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getDescription()
+    public function getTimezone(): string
     {
-        return $this->description;
+        return $this->url['timezone'];
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getTimezone()
+    public function getUrl(): string
     {
-        return $this->timezone;
+        return $this->url['url'];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUrl()
+    public function getTitle(): string
     {
-        return $this->url;
+        return $this->url['title'];
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getLatitude()
+    public function getLatitudePercent(): string
     {
-        return $this->latitude;
+        $latitude = $this->getLatitude();
+        $firstPart = intval($latitude);
+        $secondPart = intval(($latitude - $firstPart) * 100);
+
+        return $firstPart . '°' . $secondPart . '\'N';
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getLongitude()
+    public function getLatitude(): float
     {
-        return $this->longitude;
+        return floatval(explode(',', $this->url['coordinates'])[0]);
+    }
+
+    public function getLongitude(): string
+    {
+        return floatval(explode(',', $this->url['coordinates'])[1]);
+    }
+
+    public function getLongitudePercent(): string
+    {
+        $longitude = $this->getLongitude();
+        $firstPart = intval($longitude);
+        $secondPart = intval(($longitude - $firstPart) * 100);
+
+        return $firstPart . '°' . $secondPart . '\'E';
     }
 
     public function getDateTime(): \DateTime
     {
-        return (new \DateTime())->setTimezone(new \DateTimeZone($this->timezone));
+        return (new \DateTime())->setTimezone(new \DateTimeZone($this->getTimezone()));
     }
 
     public function getUtcOffset(): int
@@ -113,7 +67,8 @@ class Time
     public function getDayLength(): string
     {
         $diff = $this->getSunset()->getTimestamp() - $this->getSunrise()->getTimestamp();
-        return floor($diff / 3600) . "h " . floor(($diff % 3600) / 60) . "s";
+
+        return floor($diff / 3600) . "hours, " . floor(($diff % 3600) / 60) . " minutes";
     }
 
     public function getSunrise(): \DateTime
@@ -128,6 +83,42 @@ class Time
         $sunInfo = $this->getSunInfo();
 
         return $this->getDateTime()->setTimestamp($sunInfo['sunset']);
+    }
+
+    public function getDstStartTime(): ?\DateTime
+    {
+        $transitions = (new \DateTimeZone($this->getTimezone()))->getTransitions();
+        $dstBefore = [];
+        $dstAfter = [];
+        foreach ($transitions as $transition) {
+            if ($transition['isdst'] && new \DateTime($transition['time']) > new \DateTime()) {
+                $dstAfter[] = new \DateTime($transition['time']);
+            } elseif ($transition['isdst'] && new \DateTime($transition['time']) <= new \DateTime()) {
+                $dstBefore[] = new \DateTime($transition['time']);
+            }
+        }
+
+        if ($this->getDateTime()->format('I')) {
+            $startTime = $dstBefore ? max($dstBefore) : null;
+        } else {
+            $startTime = $dstAfter ? min($dstAfter) : null;
+        }
+
+        return $startTime;
+    }
+
+    public function getDstEndTime(): ?\DateTime
+    {
+        if ($startTime = $this->getDstStartTime()) {
+            $transitions = (new \DateTimeZone($this->getTimezone()))->getTransitions();
+            foreach ($transitions as $key => $transition) {
+                if (new \DateTime($transition['time']) > $startTime) {
+                    return (new \DateTime($transition['time']))->modify('+1 HOUR');
+                }
+            }
+        }
+
+        return null;
     }
 
     public function getDstDescription(): string
@@ -167,7 +158,7 @@ class Time
         return '';
     }
 
-    private function getSunInfo()
+    private function getSunInfo(): array
     {
         return date_sun_info(
             $this->getDateTime()->getTimestamp(),
@@ -176,19 +167,22 @@ class Time
         );
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getCountry()
+    public function getCountry(): string
     {
-        return $this->country;
+        return $this->url['country'];
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getCity()
+    public function getCity(): string
     {
-        return $this->city;
+        return $this->url['city'];
+    }
+
+    public function getFlag(): string
+    {
+        return (string) preg_replace_callback(
+            '/./',
+            static fn (array $letter) => mb_chr(ord($letter[0]) % 32 + 0x1F1E5),
+            $this->url['country_code']
+        );
     }
 }
