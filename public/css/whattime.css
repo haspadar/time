@@ -216,12 +216,13 @@ input:focus {
     color: #c20000;
 }
 
-.map {
+#map {
     height: 300px;
     width: 100%;
     background-color: azure;
     vertical-align: middle;
 }
+
 
 @media (max-width: 320px) {
     .time {
