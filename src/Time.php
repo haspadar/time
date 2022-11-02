@@ -68,7 +68,7 @@ class Time
     {
         $diff = $this->getSunset()->getTimestamp() - $this->getSunrise()->getTimestamp();
 
-        return floor($diff / 3600) . "hours, " . floor(($diff % 3600) / 60) . " minutes";
+        return floor($diff / 3600) . " hours, " . floor(($diff % 3600) / 60) . " minutes";
     }
 
     public function getSunrise(): \DateTime
