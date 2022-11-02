@@ -64,16 +64,13 @@ date_default_timezone_set($time->getTimezone());
                                     <?=($time->getDateTime()->format('O'))?> UTC
                                 </td>
                             </tr>
-                            <?php $ipTime = WhatTime::generateIpTime(WhatTime::getCurrentIp())?>
-                            <?php if ($ipTime != $time) :?>
-                                <tr>
-                                    <td class="prop_1"><img src="/img/difference.png" alt="Difference" class="icm2"/></td>
-                                    <td class="prop_2">Difference:</td>
-                                    <?php $ipTime = WhatTime::generateIpTime(WhatTime::getCurrentIp())?>
-                                    <?php $difference = WhatTime::getDifferenceInHours($ipTime, $time)?>
-                                    <td class="prop_3"><?=$difference?> hour<?=$difference > 1 ? 's' : ''?> behind <a href="/<?=$ipTime->getUrl()?>>"><?=$ipTime->getTitle()?></a></td>
-                                </tr>
-                            <?php endif;?>
+                            <tr>
+                                <td class="prop_1"><img src="/img/difference.png" alt="Difference" class="icm2"/></td>
+                                <td class="prop_2">Difference:</td>
+                                <?php $ipTime = WhatTime::generateIpTime(WhatTime::getCurrentIp())?>
+                                <?php $difference = WhatTime::getDifferenceInHours($ipTime, $time)?>
+                                <td class="prop_3"><?=$difference?> hour<?=$difference > 1 ? 's' : ''?> behind <a href="/<?=$ipTime->getUrl()?>>"><?=$ipTime->getTitle()?></a></td>
+                            </tr>
                             <tr>
                                 <td class="prop_1"><span class="prop_1"><img src="/img/location.png" alt="Location" class="icm2"/></span></td>
                                 <td class="prop_2">Lat/Long:</td>
