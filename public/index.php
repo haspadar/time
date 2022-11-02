@@ -61,7 +61,7 @@ date_default_timezone_set($time->getTimezone());
                                 <td class="prop_3">
                                     <?=IntlTimeZone::createTimeZone($time->getTimezone())->getDisplayName()?>
                                     (<?=($time->getDateTime()->format('T'))?>)
-                                    +<?=($time->getDateTime()->format('O'))?> UTC
+                                    <?=($time->getDateTime()->format('O'))?> UTC
                                 </td>
                             </tr>
                             <?php $ipTime = WhatTime::generateIpTime(WhatTime::getCurrentIp())?>
