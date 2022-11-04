@@ -216,8 +216,8 @@ input:focus {
     color: #c20000;
 }
 
-.bold {
-   font-weight: bold;
+.active-timezone {
+    font-size: 120%;
 }
 
 #map {
