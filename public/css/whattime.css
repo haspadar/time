@@ -216,6 +216,10 @@ input:focus {
     color: #c20000;
 }
 
+.bold {
+   font-weight: bold;
+}
+
 #map {
     height: 300px;
     width: 100%;
