@@ -59,9 +59,12 @@ date_default_timezone_set($time->getTimezone());
                                 <td class="prop_1"><img src="/img/earth.png" alt="Earth" class="icm2"/></td>
                                 <td class="prop_2">Time Zone:</td>
                                 <td class="prop_3">
-                                    <?=IntlTimeZone::createTimeZone($time->getTimezone())->getDisplayName()?>
-                                    (<?=($time->getDateTime()->format('T'))?>)
-                                    <?=($time->getDateTime()->format('O'))?> UTC
+                                    <?php foreach ($time->getTimezones() as $timezone) :?>
+                                        <?php $timezoneTime = (new DateTime())->setTimezone(new DateTimeZone($timezone))?>
+                                        <?=IntlTimeZone::createTimeZone($timezone)->getDisplayName()?>
+                                        (<?=$timezoneTime->format('T')?>)
+                                        <?=$timezoneTime->format('O')?> UTC
+                                    <?php endforeach;?>
                                 </td>
                             </tr>
                             <tr>

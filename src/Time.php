@@ -11,9 +11,14 @@ class Time
     {
     }
 
+    public function getTimezones(): array
+    {
+        return explode(',', $this->url['timezone']);
+    }
+
     public function getTimezone(): string
     {
-        return explode(',', $this->url['timezone'])[0];
+        return $this->getTimezones()[0];
     }
 
     public function getUrl(): string
