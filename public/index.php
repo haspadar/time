@@ -69,14 +69,19 @@ date_default_timezone_set($time->getTimezone());
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Capital:</td>
                                     <td class="prop_3">
                                         <?=$time->getFlag()?>
-                                        <?=$time->getStateCapital()->getCity()?>
+                                        <?php $capital = $time->getStateCapital()?>
+                                        <a href="/<?=$capital->getUrl()?>">
+                                            <?=$capital->getCity()?>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php else :?>
                                 <tr>
+                                    <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Country:</td>
                                     <td class="prop_3">
                                         <?=$time->getFlag()?>
