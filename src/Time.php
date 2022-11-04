@@ -182,12 +182,12 @@ class Time
 
     public function isCity(): bool
     {
-        return $this->getCity() && !$this->getState() && !$this->getCountry();
+        return $this->getCity() ? true : false;
     }
 
     public function isState(): bool
     {
-        return $this->getState() && !$this->getCountry() && !$this->getCity();
+        return $this->getState() && $this->getCountry() && !$this->getCity();
     }
 
     public function isCountry(): bool

@@ -50,7 +50,6 @@ date_default_timezone_set($time->getTimezone());
                         <div class="time"><?=$time->getDateTime()->format('H:i:s')?></div>
                         <div class="date" align="right"><?=$time->getDateTime()->format('l, d F Y')?> in <?=$time->getTitle()?></div>
                         <table class="properties" align="left">
-                            <?php var_dump($time->isState(), '$time->isState()');?>
                             <?php if ($time->isCountry()) :?>
                                 <tr>
                                     <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
