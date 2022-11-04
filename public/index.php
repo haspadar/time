@@ -69,7 +69,7 @@ date_default_timezone_set($time->getTimezone());
                                 <td class="prop_2">Difference:</td>
                                 <?php $ipTime = WhatTime::generateIpTime(WhatTime::getCurrentIp())?>
                                 <?php $difference = WhatTime::getDifferenceInHours($ipTime, $time)?>
-                                <td class="prop_3"><?=$difference?> hour<?=$difference > 1 ? 's' : ''?> behind <a href="/<?=$ipTime->getUrl()?>>"><?=$ipTime->getTitle()?></a></td>
+                                <td class="prop_3"><?=$difference?> hour<?=$difference > 1 ? 's' : ''?> behind <a href="/<?=$ipTime->getUrl()?>"><?=$ipTime->getTitle()?></a></td>
                             </tr>
                             <tr>
                                 <td class="prop_1"><span class="prop_1"><img src="/img/location.png" alt="Location" class="icm2"/></span></td>
@@ -163,41 +163,11 @@ date_default_timezone_set($time->getTimezone());
     </tbody>
 </table>
 
-<!--<input type="text" class="location" placeholder="Location" value="<?/*=$time->getTitle()*/?>">
 
-    <div class="time">...</div>
-    <div class="date">...</div>
-
-<hr>
-    Sunrise: <?/*=$time->getSunrise()->format('H:i')*/?>
-    Sunset: <?/*=$time->getSunset()->format('H:i')*/?>
-    Day Length: <?/*=$time->getDayLength()*/?>
-    UTC offet: <?/*=$time->getUtcOffset()*/?> hours
-    Timezone: <?/*=$time->getTimezone()*/?>
-    <div><?/*=$time->getDstDescription()*/?></div>
-<hr>
-    <ul>
-    <?php /*foreach ([
-            ['city' => 'Tokyo', 'timezone' => 'Asia/Tokyo'],
-            ['city' => 'Beijing', 'timezone' => 'Asia/Shanghai'],
-            ['city' => 'Kyiv', 'timezone' => 'Europe/Kiev'],
-            ['city' => 'Paris', 'timezone' => 'Europe/Paris'],
-            ['city' => 'London', 'timezone' => 'Europe/London'],
-            ['city' => 'New York', 'timezone' => 'America/New_York'],
-            ['city' => 'Los Angeles', 'timezone' => 'America/Los_Angeles'],
-        ] as $location) :*/?>
-        <li>Time in <?/*=$location['city']*/?>: <span class="location-time" data-timezone="<?/*=$location['timezone']*/?>">
-                <?/*=$time->getDateTime()->format('H:i')*/?>
-            </span>
-        </li>
-    <?php /*endforeach;*/?>
-    </ul>-->
-
-    <script src="/js/jquery.min.js"/></script>
-    <script src="/js/jquery-ui.js"/></script>
-    <script src="/js/jquery.ui.autocomplete.html.js"/></script>
-   <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
-
-    <script src="/js/whattime.js"/></script>
+<script src="/js/jquery.min.js"/></script>
+<script src="/js/jquery-ui.js"/></script>
+<script src="/js/jquery.ui.autocomplete.html.js"/></script>
+<script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg=" crossorigin=""></script>
+<script src="/js/whattime.js"/></script>
 </body>
 </html>
