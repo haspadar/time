@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../config.php';
 $file_to_read = fopen('geonames-all-cities-with-a-population-1000.csv', 'r');
 DB::query('TRUNCATE table cities');
 if ($file_to_read !== FALSE) {

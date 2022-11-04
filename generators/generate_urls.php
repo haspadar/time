@@ -1,7 +1,7 @@
 <?php
 //Поиск 1904 пропущенных: SELECT * FROM cities WHERE id NOT IN(SELECT city_id FROM urls);
 
-require_once 'config.php';
+require_once '../config.php';
 DB::query('TRUNCATE table urls');
 $countriesWithSingleTimezone = DB::query(
     'SELECT country_name_en, COUNT(distinct timezone) AS count, GROUP_CONCAT(distinct timezone) AS timezone FROM cities WHERE country_name_en <> "" GROUP BY country_name_en having count=1'

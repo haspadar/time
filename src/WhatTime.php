@@ -44,7 +44,7 @@ class WhatTime
         ]);
         $cityName = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
         if (($url = \DB::queryFirstRow('SELECT * FROM urls WHERE city=%s AND timezone=%s', $cityName, $timezone))
-            || ($url = \DB::queryFirstRow('SELECT * FROM urls WHERE timezone=%s AND is_capital=1', $timezone))
+            || ($url = \DB::queryFirstRow('SELECT * FROM urls WHERE timezone=%s AND is_country_capital=1', $timezone))
             || ($url = \DB::queryFirstRow('SELECT * FROM urls WHERE timezone=%s', $timezone))
         ) {
             return new Time($url);
@@ -69,7 +69,7 @@ class WhatTime
 
     private static function generateDefaultTime(): Time
     {
-        $url = \DB::queryFirstRow('SELECT * FROM urls WHERE country=%s AND is_capital=1', 'Ukraine');
+        $url = \DB::queryFirstRow('SELECT * FROM urls WHERE country=%s AND is_country_capital=1', 'Ukraine');
 
         return new Time($url);
     }

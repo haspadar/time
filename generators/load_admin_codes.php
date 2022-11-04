@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once '../config.php';
 $file_to_read = fopen('admin1CodesASCII.txt', 'r');
 DB::query('TRUNCATE table admin1_codes');
 if ($file_to_read !== FALSE) {
