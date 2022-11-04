@@ -50,45 +50,40 @@ date_default_timezone_set($time->getTimezone());
                         <div class="time"><?=$time->getDateTime()->format('H:i:s')?></div>
                         <div class="date" align="right"><?=$time->getDateTime()->format('l, d F Y')?> in <?=$time->getTitle()?></div>
                         <table class="properties" align="left">
-                            <tr>
-                                <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
-                                <?php if ($time->isCountry()) :?>
+                            <?php if ($time->isCountry()) :?>
+                                <tr>
+                                    <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Capital:</td>
                                     <td class="prop_3">
                                         <?=$time->getFlag()?>
                                         <?=$time->getCountryCapital()->getCity()?>
                                     </td>
-                                <?php elseif ($time->isState()) :?>
+                                </tr>
+                            <?php elseif ($time->isState()) :?>
+                                <tr>
+                                    <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Country:</td>
                                     <td class="prop_3">
                                         <?=$time->getFlag()?>
                                         <?=$time->getCountry()?>
                                     </td>
+                                </tr>
+                                <tr>
                                     <td class="prop_2">Capital:</td>
                                     <td class="prop_3">
                                         <?=$time->getFlag()?>
                                         <?=$time->getStateCapital()->getCity()?>
                                     </td>
-                                <?php else :?>
+                                </tr>
+                            <?php else :?>
+                                <tr>
                                     <td class="prop_2">Country:</td>
                                     <td class="prop_3">
                                         <?=$time->getFlag()?>
                                         <?=$time->getCountry()?>
                                     </td>
-                                <?php endif?>
-
-                                <td class="prop_2">Country:</td>
-                                <td class="prop_3"><?=$time->getFlag()?>
-                                    <?php if ($time->isCountry()) :?>
-                                        <?php $capital = $time->getCountryCapital();?>
-                                        <a href="/<?=$capital->getUrl()?>">
-                                            <?=$capital->getCity()?>
-                                        </a>
-                                    <?php elseif ($time->isState()) :?>
-                                        <?php $state = $time->getStateCapital()?>
-                                    <?php endif?>
-                                </td>
-                            </tr>
+                                </tr>
+                            <?php endif?>
                             <tr>
                                 <td class="prop_1"><img src="/img/earth.png" alt="Earth" class="icm2"/></td>
                                 <td class="prop_2">Time Zone:</td>
