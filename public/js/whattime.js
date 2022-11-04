@@ -38,7 +38,7 @@ function generateDate(timezone) {
 
     return dayNames[now.getDay()]
         + ', '
-        + zeroFill(now.getUTCDate() + 1)
+        + zeroFill(now.getUTCDate())
         + ' '
         + monthNames[zeroFill(now.getMonth())]
         + ' '
