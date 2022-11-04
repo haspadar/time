@@ -65,7 +65,7 @@ date_default_timezone_set($time->getTimezone());
                                             <br>
                                         <?php endif;?>
 
-                                        <span <?php if (!$key && count($time->getTimezones()) > 1): ?>class="bold" <?php endif;?>
+                                        <span <?php if (!$key && count($time->getTimezones()) > 1): ?>class="bold" <?php endif;?>>
                                             <?=IntlTimeZone::createTimeZone($timezone)->getDisplayName()?>
                                             (<?=$timezoneTime->format('T')?>)
                                             <?=$timezoneTime->format('O')?> UTC
