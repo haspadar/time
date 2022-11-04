@@ -73,4 +73,14 @@ class WhatTime
 
         return new Time($url);
     }
+
+    public static function getCountryCapital(array $url): Time
+    {
+        return new Time(\DB::queryFirstRow('SELECT * FROM urls WHERE country=%s AND is_country_capital=1', $url['country']));
+    }
+
+    public static function getStateCapital(array $url): Time
+    {
+        return new Time(\DB::queryFirstRow('SELECT * FROM urls WHERE state=%s AND is_state_capital=1', $url['state']));
+    }
 }

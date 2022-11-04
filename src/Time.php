@@ -7,8 +7,16 @@ use MaxMind\Db\Reader;
 
 class Time
 {
+    private ?Time $countryCapital = null;
+    private ?Time $stateCapital = null;
+
     public function __construct(private array $url)
     {
+        if ($this->isCountry()) {
+            $this->countryCapital = WhatTime::getCountryCapital($url);
+        } elseif ($this->isState()) {
+            $this->stateCapital = WhatTime::getStateCapital($url);
+        }
     }
 
     public function getTimezones(): array
@@ -172,6 +180,26 @@ class Time
         );
     }
 
+    public function isCity(): bool
+    {
+        return $this->getCity() && !$this->getState() && !$this->getCountry();
+    }
+
+    public function isState(): bool
+    {
+        return $this->getState() && !$this->getCountry() && !$this->getCity();
+    }
+
+    public function isCountry(): bool
+    {
+        return $this->getCountry() && !$this->getCity() && !$this->getState();
+    }
+
+    public function getState(): string
+    {
+        return $this->url['state'];
+    }
+
     public function getCountry(): string
     {
         return $this->url['country'];
@@ -189,5 +217,15 @@ class Time
             static fn (array $letter) => mb_chr(ord($letter[0]) % 32 + 0x1F1E5),
             $this->url['country_code']
         );
+    }
+
+    public function getCountryCapital(): Time
+    {
+        return $this->countryCapital;
+    }
+
+    public function getStateCapital(): Time
+    {
+        return $this->stateCapital;
     }
 }
