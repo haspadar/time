@@ -94,43 +94,51 @@ date_default_timezone_set($time->getTimezone());
                         </table>
                         <?php $dstStartTime = $time->getDstStartTime()?>
                         <?php $dstEndTime = $time->getDstEndTime()?>
-                        <?php if ($dstStartTime) :?>
+
                             <table class="dst">
                             <tbody>
-                            <tr>
-                                <td colspan="2" class="dst_title">Daylight Saving Time</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <img src="/img/dst-<?=intval($dstStartTime->format('H'))?>-<?=intval($dstStartTime->modify('+1 HOUR')->format('H'))?>.png" class="img_dts" alt=""/>
-                                </td>
-                                <td>
-                                    <img src="/img/dst-<?=intval($dstEndTime->format('H'))?>-<?=intval($dstEndTime->modify('-1 HOUR')->format('H'))?>.png" class="img_dts" alt=""/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Starts on</td>
-                                <td>Ends on</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <?php $dstStartTime = $time->getDstStartTime()?>
-                                    <?php $dstEndTime = $time->getDstEndTime()?>
-                                    <?=$dstStartTime->format('F d, Y')?><br>
-                                    at <?=$dstStartTime->format('H:i')?>
-                                </td>
-                                <td><?=$dstEndTime->format('F d, Y')?><br>
-                                    at <?=$dstEndTime->format('H:i')?></td>
-                            </tr>
-                            <tr>
-                                <td>Set Your Clock<br>
-                                    <strong class="red">Ahead 1 hour</strong></td>
-                                <td>Set Your Clock<br>
-                                    <strong class="red">Back 1 hour</strong></td>
-                            </tr>
+                            <?php if ($dstStartTime) :?>
+                                <tr>
+                                    <td colspan="2" class="dst_title">Daylight Saving Time</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="/img/dst-<?=intval($dstStartTime->format('H'))?>-<?=intval($dstStartTime->modify('+1 HOUR')->format('H'))?>.png" class="img_dts" alt=""/>
+                                    </td>
+                                    <td>
+                                        <img src="/img/dst-<?=intval($dstEndTime->format('H'))?>-<?=intval($dstEndTime->modify('-1 HOUR')->format('H'))?>.png" class="img_dts" alt=""/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Starts on</td>
+                                    <td>Ends on</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <?php $dstStartTime = $time->getDstStartTime()?>
+                                        <?php $dstEndTime = $time->getDstEndTime()?>
+                                        <?=$dstStartTime->format('F d, Y')?><br>
+                                        at <?=$dstStartTime->format('H:i')?>
+                                    </td>
+                                    <td><?=$dstEndTime->format('F d, Y')?><br>
+                                        at <?=$dstEndTime->format('H:i')?></td>
+                                </tr>
+                                <tr>
+                                    <td>Set Your Clock<br>
+                                        <strong class="red">Ahead 1 hour</strong></td>
+                                    <td>Set Your Clock<br>
+                                        <strong class="red">Back 1 hour</strong></td>
+                                </tr>
+                            <?php else :?>
+                                <tr>
+                                    <td class="dst_title">Daylight Saving Time</td>
+                                </tr>
+                                <tr>
+                                    <td>This location does not observe Daylight Saving Time.</td>
+                                </tr>
+                            <?php endif;?>
                             </tbody>
                         </table>
-                        <?php endif;?>
 
                         <?php if ($time->getLatitude()) :?>
                             <div class="map">
