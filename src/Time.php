@@ -13,7 +13,7 @@ class Time
 
     public function getTimezone(): string
     {
-        return $this->url['timezone'];
+        return explode(',', $this->url['timezone'])[0];
     }
 
     public function getUrl(): string
