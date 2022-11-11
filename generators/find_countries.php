@@ -8,15 +8,15 @@ foreach ($countries as $country) {
     $capital = DB::queryFirstRow('SELECT * FROM urls WHERE country=%s AND is_country_capital=1', $country);
     if (!$capital) {
         var_dump($country, 'not found');
+    } else {
+        DB::insert('urls', [
+            'url' => $url,
+            'country' => $country,
+            'title' => $country,
+            'coordinates' => $capital['coordinates'],
+            'timezone' => $capital['timezone'],
+        ]);
+        var_dump('Added ' . $url);
     }
-
-    DB::insert('urls', [
-        'url' => $url,
-        'country' => $country,
-        'title' => $country,
-        'coordinates' => $capital['coordinates'],
-        'timezone' => $capital['timezone'],
-    ]);
-    var_dump('Added ' . $url);
 }
 
