@@ -5,16 +5,18 @@ $countries = DB::queryFirstColumn('SELECT DISTINCT country_name_en FROM cities A
 foreach ($countries as $country) {
     $url = strtr($country, [' ' => '_']);
 //    $found = DB::queryFirstRow('SELECT * FROM urls WHERE url=%s', $url);
-    $capital = DB::queryFirstRow('SELECT * FROM urls WHERE country=%s AND is_country_capital=1', $url);
+    $capital = DB::queryFirstRow('SELECT * FROM urls WHERE country=%s AND is_country_capital=1', $country);
     if (!$capital) {
-        var_dump($country);
+        var_dump($country, 'not found');
     }
-//    DB::insert('urls', [
-//        'url' => $url,
-//        'country' => $country,
-//        'title' => $country,
-//        'coordinates'
-//        'timezone'
-//    ])
+
+    DB::insert('urls', [
+        'url' => $url,
+        'country' => $country,
+        'title' => $country,
+        'coordinates' => $capital['coordinates'],
+        'timezone' => $capital['timezone'],
+    ]);
+    var_dump('Added ' . $url);
 }
 
