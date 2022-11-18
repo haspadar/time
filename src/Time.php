@@ -195,9 +195,23 @@ class Time
         return $this->getCountry() && !$this->getCity() && !$this->getState();
     }
 
+    public function getHtmlDescription(): string
+    {
+        if ($this->isMainPage()) {
+            return 'Check current local time in cities and countries in all time zones, adjusted for Daylight Saving Time rules. See the time difference between any cities and countries around the world.';
+        }
+
+        return 'Check exact local time and date in '
+            . implode(', ', array_filter([
+                $this->getCity(),
+                $this->getState(),
+                $this->getCountry()
+            ])) . '. Official time zone. Time difference, sunrise and sunset time. Information about Daylight Saving Time.';
+    }
+
     public function getHtmlTitle(): string
     {
-        if (parse_url($_SERVER['REQUEST_URI'])['path'] == '/') {
+        if ($this->isMainPage()) {
             return 'Current exact time in your city';
         }
 
@@ -240,5 +254,13 @@ class Time
     public function getStateCapital(): Time
     {
         return $this->stateCapital;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isMainPage(): bool
+    {
+        return parse_url($_SERVER['REQUEST_URI'])['path'] == '/';
     }
 }
