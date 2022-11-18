@@ -202,11 +202,13 @@ class Time
         }
 
         return 'Check exact local time and date in '
-            . implode(', ', array_filter([
-                $this->getCity(),
-                $this->getState(),
-                $this->getCountry()
-            ])) . '. Official time zone. Time difference, sunrise and sunset time. Information about Daylight Saving Time.';
+            . $this->getTitle()
+            . '. Official time zone. Time difference, sunrise and sunset time. Information about Daylight Saving Time.';
+    }
+
+    public function getHtmlH1(): string
+    {
+        return 'Current time in ' . $this->getTitle() . ' right now';
     }
 
     public function getHtmlTitle(): string
@@ -215,11 +217,7 @@ class Time
             return 'What-time.info – current exact time in your city';
         }
 
-        return 'What time is it in ' . implode(', ', array_filter([
-            $this->getCity(),
-            $this->getState(),
-            $this->getCountry()
-        ]));
+        return 'What time is it in ' . $this->getTitle();
     }
 
     public function getState(): string

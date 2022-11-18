@@ -45,7 +45,7 @@ date_default_timezone_set($time->getTimezone());
                 <tbody>
                 <tr>
                     <td>
-                        <h1 align="left">Time in <?=$time->getCity()?> right now</h1>
+                        <h1 align="left">Time in <?=$time->getHtmlH1()?> right now</h1>
                         <div class="time"><?=$time->getDateTime()->format('H:i:s')?></div>
                         <div class="date" align="right"><?=$time->getDateTime()->format('l, d F Y')?> in <?=$time->getTitle()?></div>
                         <table class="properties" align="left">
