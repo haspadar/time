@@ -6,7 +6,7 @@ const zeroFill = n => {
 updateLocationsTime('.location-time');
 const interval = setInterval(() => {
     $('.time').html(generateTime($('#timezone').val()));
-    $('.date').html(generateDate($('#timezone').val()) + ' in ' + $('#description').val());
+    $('.date').html(generateDate($('#timezone').val()));
     updateLocationsTime('.location-time');
     // updateTitle();
 }, 1000);

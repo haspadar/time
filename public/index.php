@@ -47,7 +47,7 @@ date_default_timezone_set($time->getTimezone());
                     <td>
                         <h1 align="left"><?=$time->getHtmlH1()?></h1>
                         <div class="time"><?=$time->getDateTime()->format('H:i:s')?></div>
-                        <div class="date" align="right"><?=$time->getDateTime()->format('l, d F Y')?> in <?=$time->getTitle()?></div>
+                        <div class="date" align="right"><?=$time->getDateTime()->format('l, d F Y')?></div>
                         <table class="properties" align="left">
                             <?php if ($time->isCountry()) :?>
                                 <tr>
