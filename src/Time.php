@@ -9,6 +9,7 @@ class Time
 {
     private ?Time $countryCapital = null;
     private ?Time $stateCapital = null;
+    private string $countryUrl;
 
     public function __construct(private array $url)
     {
@@ -16,6 +17,10 @@ class Time
             $this->countryCapital = WhatTime::getCountryCapital($url);
         } elseif ($this->isState()) {
             $this->stateCapital = WhatTime::getStateCapital($url);
+        }
+
+        if (!$this->isCountry()) {
+            $this->countryUrl = WhatTime::getCountryUrl($this->getCountry());
         }
     }
 
@@ -223,6 +228,11 @@ class Time
     public function getState(): string
     {
         return $this->url['state'];
+    }
+
+    public function getCountryUrl(): string
+    {
+        return $this->countryUrl;
     }
 
     public function getCountry(): string

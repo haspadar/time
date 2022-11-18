@@ -54,8 +54,10 @@ date_default_timezone_set($time->getTimezone());
                                     <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Capital:</td>
                                     <td class="prop_3">
-                                        <?=$time->getFlag()?>
-                                        <?=$time->getCountryCapital()->getCity()?>
+                                        <a href="<?=$time->getCountryCapital()->getUrl()?>">
+                                            <?=$time->getFlag()?>
+                                            <?=$time->getCountryCapital()->getCity()?>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php elseif ($time->isState()) :?>
@@ -63,8 +65,10 @@ date_default_timezone_set($time->getTimezone());
                                     <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Country:</td>
                                     <td class="prop_3">
-                                        <?=$time->getFlag()?>
-                                        <?=$time->getCountry()?>
+                                        <a href="<?=$time->getCountryUrl()?>">
+                                            <?=$time->getFlag()?>
+                                            <?=$time->getCountry()?>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -83,8 +87,11 @@ date_default_timezone_set($time->getTimezone());
                                     <td class="prop_1"><img src="img/flag.png" alt="Flag" class="icm2"/></td>
                                     <td class="prop_2">Country:</td>
                                     <td class="prop_3">
-                                        <?=$time->getFlag()?>
-                                        <?=$time->getCountry()?>
+                                        <a href="<?=$time->getCountryUrl()?>">
+                                            <?=$time->getFlag()?>
+                                            <?=$time->getCountry()?>
+                                        </a>
+
                                     </td>
                                 </tr>
                             <?php endif?>

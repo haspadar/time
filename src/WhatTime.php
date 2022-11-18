@@ -12,6 +12,11 @@ class WhatTime
         return \DB::queryFirstRow('SELECT * FROM urls WHERE url=%s', $location) ?? [];
     }
 
+    public static function getCountryUrl(string $country): string
+    {
+        return \DB::queryFirstField('SELECT url FROM urls WHERE country=%s AND state="" AND city=""', $country);
+    }
+
     public static function generateTime(): Time
     {
         if ($requestLocation = strtr(Filter::get($_SERVER['REQUEST_URI']), ['/' => ''])) {
