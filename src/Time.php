@@ -39,6 +39,11 @@ class Time
         return $this->url['url'];
     }
 
+    public function getH1(): string
+    {
+        return $this->url['h1'];
+    }
+
     public function getTitle(): string
     {
         return $this->url['title'];
@@ -213,7 +218,7 @@ class Time
 
     public function getHtmlH1(): string
     {
-        return 'Current time in ' . $this->getTitle() . ' right now';
+        return 'Current time in ' . $this->getH1() . ' right now';
     }
 
     public function getHtmlTitle(): string
