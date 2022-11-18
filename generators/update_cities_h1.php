@@ -23,7 +23,7 @@ while ($cities = DB::query(
         $updates = [
             'h1' => $h1,
             'title' => $isUs ? $title : $city['title'],
-            'city' => $city,
+//            'city' => $city,
             'admin1_code_ascii' => $city['admin1_code_ascii']
         ];
         Db::update('urls', $updates, 'id=%d', $city['id']);
