@@ -195,6 +195,19 @@ class Time
         return $this->getCountry() && !$this->getCity() && !$this->getState();
     }
 
+    public function getHtmlTitle(): string
+    {
+        if (parse_url($_SERVER['REQUEST_URI'])['path'] == '/') {
+            return 'Current exact time in your city';
+        }
+
+        return 'What time is it in ' . implode(', ', array_filter([
+            $this->getCity(),
+            $this->getState(),
+            $this->getCountry()
+        ]));
+    }
+
     public function getState(): string
     {
         return $this->url['state'];
