@@ -19,8 +19,7 @@ date_default_timezone_set($time->getTimezone());
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14=" crossorigin=""/>
     <link rel="canonical" href="https://www.what-time.info/<?=$time->getCity() ?? $time->getCountry()?>>">
     <title><?=$time->getHtmlTitle()?></title>
-    <title><?=$time->getHtmlDescription()?></title>
-    <meta name="description" content="Exact time now, time zone, time difference, sunrise/sunset time and key facts for Vilnius, Lithuania.">
+    <meta name="description" content="<?=$time->getHtmlDescription()?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>

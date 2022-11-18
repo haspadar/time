@@ -8,14 +8,14 @@ const interval = setInterval(() => {
     $('.time').html(generateTime($('#timezone').val()));
     $('.date').html(generateDate($('#timezone').val()) + ' in ' + $('#description').val());
     updateLocationsTime('.location-time');
-    updateTitle();
+    // updateTitle();
 }, 1000);
 
-function updateTitle() {
-    let $title = $('title');
-    let title = $.trim($title.text().split(':')[0]);
-    $title.text(title + ': ' + generateTime($title.data('timezone'), true));
-}
+// function updateTitle() {
+//     let $title = $('title');
+//     let title = $.trim($title.text().split(':')[0]);
+//     $title.text(title + ': ' + generateTime($title.data('timezone'), true));
+// }
 
 function updateLocationsTime(selector) {
     $(selector).each(function () {

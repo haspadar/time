@@ -212,7 +212,7 @@ class Time
     public function getHtmlTitle(): string
     {
         if ($this->isMainPage()) {
-            return 'Current exact time in your city';
+            return 'What-time.info – current exact time in your city';
         }
 
         return 'What time is it in ' . implode(', ', array_filter([
