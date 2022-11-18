@@ -12,7 +12,7 @@ while ($cities = DB::query(
     foreach ($cities as $key => $city) {
         echo ($key + 1) + $offset . '/' . $count . PHP_EOL;
         $isCountry = !$city['state'];
-        $title = implode(', ', array_filter([$city['country'], $city['state']]));
+        $title = implode(', ', array_filter([$city['state'], $city['country']]));
         $updates = [
             'h1' => $isCountry ? $city['country'] : $title,
             'title' => $isCountry ? $city['country'] : $title,
