@@ -51,7 +51,7 @@ require_once 'header.inc'; ?>
                         if ($hours > 0) :?>
                             <?=$firstLocationTime->getTitle()?> time is <span class="red"><?=$hours?>:00</span> hours behind <?=$secondLocationTime->getTitle()?>
                         <?php else :?>
-                            <?=$firstLocationTime->getTitle()?> time is <span class="red"><?=-$hours?>:00</span> hours behind <?=$secondLocationTime->getTitle()?>
+                            <?=$firstLocationTime->getTitle()?> time is <span class="red"><?=-$hours?>:00</span> hours ahead <?=$secondLocationTime->getTitle()?>
                         <?php endif; ?>
 
                     </p>
