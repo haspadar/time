@@ -1,10 +1,8 @@
 <?php
-use WhatTime\WhatTime;
-
 require_once '../config.php';
 
-$title = 'Title';
-$description = 'description';
+$title = 'Time converter';
+$description = 'Time converter';
 
 require_once 'header.inc'; ?>
 

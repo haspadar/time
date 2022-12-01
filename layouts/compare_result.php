@@ -1,15 +1,15 @@
 <?php
 
-use WhatTime\Time;
 use WhatTime\WhatTime;
 
 require_once '../config.php';
 
-$title = 'Time';
-$description = 'Descrit';
-
 $firstLocationTime = WhatTime::getFirstLocationTime();
 $secondLocationTime = WhatTime::getSecondLocationTime();
+
+$title = 'Time in ' . $firstLocationTime->getHtmlTitle() . ' vs ' . $secondLocationTime->getHtmlTitle();
+$description = 'Check time difference between ' . $firstLocationTime->getHtmlDescription() . ' and ' . $secondLocationTime->getHtmlDescription();
+
 require_once 'header.inc'; ?>
 
 <tr>
@@ -18,7 +18,7 @@ require_once 'header.inc'; ?>
             <tbody>
             <tr>
                 <td>
-                    <h1 align="left">Time in <?=$firstLocationTime->getTitle()?> vs <?=$secondLocationTime->getTitle()?></h1>
+                    <h1 align="left">Time in <?=$firstLocationTime->getHtmlTitle()?> vs <?=$secondLocationTime->getHtmlTitle()?></h1>
                     <table class="tbl_conv">
                         <tbody>
                         <tr>
