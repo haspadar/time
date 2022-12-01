@@ -22,7 +22,7 @@ require_once 'header.inc'; ?>
                     <table class="tbl_conv">
                         <tbody>
                         <tr>
-                            <td class="country_vs"><?=$firstLocationTime->getFlag()?> <a href="<?=$firstLocationTime->getUrl()?>"><?=$firstLocationTime->getTitle()?></a></td>
+                            <td class="country_vs"><?=$firstLocationTime->getFlag()?> <a href="/<?=$firstLocationTime->getUrl()?>"><?=$firstLocationTime->getTitle()?></a></td>
                         </tr>
                         <tr>
                             <td class="time_vs"><?=$firstLocationTime->getDateTime()->format('H:i:s')?></td>
@@ -35,7 +35,7 @@ require_once 'header.inc'; ?>
                     <table class="tbl_conv2">
                         <tbody>
                         <tr>
-                            <td><?=$secondLocationTime->getFlag()?> <a href="<?=$secondLocationTime->getUrl()?>"><?=$secondLocationTime->getTitle()?></a></td>
+                            <td><?=$secondLocationTime->getFlag()?> <a href="/<?=$secondLocationTime->getUrl()?>"><?=$secondLocationTime->getTitle()?></a></td>
                         </tr>
                         <tr>
                             <td class="time_vs"><?=$secondLocationTime->getDateTime()->format('H:i:s')?></td>
