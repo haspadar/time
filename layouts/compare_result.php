@@ -49,9 +49,9 @@ require_once 'header.inc'; ?>
                         <?php
                         $hours = WhatTime::getDifferenceInHours($firstLocationTime, $secondLocationTime);
                         if ($hours > 0) :?>
-                            <?=$firstLocationTime->getTitle()?> time is <span class="red"><?=$hours?>:00</span> hours behind <?=$secondLocationTime->getTitle()?>
-                        <?php else :?>
                             <?=$firstLocationTime->getTitle()?> time is <span class="red"><?=-$hours?>:00</span> hours ahead <?=$secondLocationTime->getTitle()?>
+                        <?php else :?>
+                            <?=$firstLocationTime->getTitle()?> time is <span class="red"><?=$hours?>:00</span> hours behind <?=$secondLocationTime->getTitle()?>
                         <?php endif; ?>
 
                     </p>
