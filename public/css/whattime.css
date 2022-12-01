@@ -295,3 +295,44 @@ a.footer:hover {
     text-align: right;
     font-size: small;
 }
+
+/* converter */
+
+.tbl_conv {
+    width: 297px;
+    padding: 20px 0;
+    float:left;
+}
+
+.tbl_conv2 {
+    width: 297px;
+    padding: 20px 0;
+}
+
+.properties_vs {
+    width: 290px;
+    float: left;
+    padding: 0 20px 20px 0;
+}
+
+.properties_vs2 {
+    width: 290px;
+    float: left;
+    padding-bottom: 20px;
+}
+
+.country_vs {
+}
+
+.result_vs {
+    font-size: 20px;
+    text-align: center;
+}
+
+.time_vs {
+    font-size:65px;
+    font-weight: bold;
+    color: #1a2e46;
+}
+
+/* end converter */

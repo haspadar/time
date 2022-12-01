@@ -7,14 +7,14 @@ use MaxMind\Db\Reader;
 
 class WhatTime
 {
-    public static function getUrl(string $location): array
+    public static function getUrl(string $locationUrl): array
     {
-        return \DB::queryFirstRow('SELECT * FROM urls WHERE url=%s', $location) ?? [];
+        return \DB::queryFirstRow('SELECT * FROM urls WHERE url=%s', $locationUrl) ?? [];
     }
 
     public static function getCountryUrl(string $country): string
     {
-        return \DB::queryFirstField('SELECT url FROM urls WHERE country=%s AND state="" AND city=""', $country);
+        return \DB::queryFirstField('SELECT url FROM urls WHERE country=%s AND state="" AND city=""', $country) ?? '';
     }
 
     public static function generateTime(): Time
@@ -43,11 +43,17 @@ class WhatTime
     {
         $reader = new Reader('../GeoLite2-City.mmdb');
         $geoIp = $reader->get($ip);
-        $names = $geoIp['city']['names'];
-        $timezone = strtr($geoIp['location']['time_zone'], [
-            'Europe/Kyiv' => 'Europe/Kiev'
-        ]);
-        $cityName = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
+        if ($geoIp) {
+            $names = $geoIp['city']['names'];
+            $timezone = strtr($geoIp['location']['time_zone'], [
+                'Europe/Kyiv' => 'Europe/Kiev'
+            ]);
+            $cityName = $names[0] ?? $names['en'] ?? explode('/', $timezone)[1];
+        } else {
+            $timezone = 'Europe/Kiev';
+            $cityName = 'Kiev';
+        }
+
         if (($url = \DB::queryFirstRow('SELECT * FROM urls WHERE city=%s AND timezone=%s', $cityName, $timezone))
             || ($url = \DB::queryFirstRow('SELECT * FROM urls WHERE timezone=%s AND is_country_capital=1', $timezone))
             || ($url = \DB::queryFirstRow('SELECT * FROM urls WHERE timezone=%s', $timezone))
@@ -87,5 +93,20 @@ class WhatTime
     public static function getStateCapital(array $url): Time
     {
         return new Time(\DB::queryFirstRow('SELECT * FROM urls WHERE state=%s AND is_state_capital=1', $url['state']));
+    }
+
+    public static function getFirstLocationTime(): Time
+    {
+        return new Time(self::getUrl(urldecode(self::getCompareUrls()[0])));
+    }
+
+    public static function getSecondLocationTime(): Time
+    {
+        return new Time(self::getUrl(urldecode(self::getCompareUrls()[1])));
+    }
+
+    private static function getCompareUrls(): array
+    {
+        return array_values(array_filter(explode('/', $_SERVER['REQUEST_URI'])));
     }
 }

@@ -85,8 +85,16 @@ $( ".location" ).autocomplete({
         });
     },
     select: function (event, ui) {
-        $('.location').val(ui.item.label.split('<div')[0]); // display the selected text
-        document.location = '/' + ui.item.url;
+        var selectedText = ui.item.label.split('</div')[0].replace('<div>', '');
+        $(event.target).val(selectedText); // display the selected text
+        $(event.target).attr('data-url', ui.item.url);
+        if ($(event.target).hasClass('compare')) {
+            if ($('.compare-first').val() && $('.compare-second').val()) {
+                document.location = $('.compare-first').attr('data-url') + '/' + $('.compare-second').attr('data-url');
+            }
+        } else {
+            document.location = '/' + ui.item.url;
+        }
 
         return false;
     }
