@@ -5,7 +5,7 @@ if ($time->isCountry()) :?>
         <td class="prop_1"><img src="/img/flag.png" alt="Flag" class="icm2"/></td>
         <td class="prop_2">Capital:</td>
         <td class="prop_3">
-            <a href="<?=$time->getCountryCapital()->getUrl()?>">
+            <a href="/<?=$time->getCountryCapital()->getUrl()?>">
                 <?=$time->getFlag()?>
                 <?=$time->getCountryCapital()->getCity()?>
             </a>
@@ -16,7 +16,7 @@ if ($time->isCountry()) :?>
         <td class="prop_1"><img src="/img/flag.png" alt="Flag" class="icm2"/></td>
         <td class="prop_2">Country:</td>
         <td class="prop_3">
-            <a href="<?=$time->getCountryUrl()?>">
+            <a href="/<?=$time->getCountryUrl()?>">
                 <?=$time->getFlag()?>
                 <?=$time->getCountry()?>
             </a>
@@ -38,7 +38,7 @@ if ($time->isCountry()) :?>
         <td class="prop_1"><img src="/img/flag.png" alt="Flag" class="icm2"/></td>
         <td class="prop_2">Country:</td>
         <td class="prop_3">
-            <a href="<?=$time->getCountryUrl()?>">
+            <a href="/<?=$time->getCountryUrl()?>">
                 <?=$time->getFlag()?>
                 <?=$time->getCountry()?>
             </a>
