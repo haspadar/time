@@ -109,7 +109,7 @@ class Sitemap
         );
         foreach ($urls as $url) {
             $element = $xml->addChild('url');
-            $element->addChild('loc', $this->domainUrl . $url);
+            $element->addChild('loc', $url);
             $element->addChild('lastmod', (new \DateTime())->format('Y-m-d'));
             $element->addChild('changefreq', 'daily');
         }
@@ -176,7 +176,6 @@ class Sitemap
             $this->getDirectoryRecursiveFiles($this->path),
             ['/' . $fileName . '.xml']
         );
-
         $this->saveUrls($this->path, $fileName, $filesUrls);
         $indexesUrls = $this->getFilesUrls(
             $this->getDirectoryFiles($this->path),
@@ -186,7 +185,7 @@ class Sitemap
             $this->saveUrls($this->path, $fileName, $indexesUrls, false);
         }
 
-        $siteMapIndexUrl = $this->path . '/' . $fileName . '.xml';
+        $siteMapIndexUrl = $this->domainUrl . '/sitemaps/' . $fileName . '.xml';
 
         return $siteMapIndexUrl;
     }
@@ -197,7 +196,7 @@ class Sitemap
         foreach ($paths as $path) {
             $parts = explode($this->path, $path);
             if (!in_array($parts[1], $excludes)) {
-                $filesUrls[] = $this->path . $parts[1];
+                $filesUrls[] = $this->domainUrl . '/' . $parts[1];
             }
         }
 
