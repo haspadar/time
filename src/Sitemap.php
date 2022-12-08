@@ -8,11 +8,14 @@ class Sitemap
     const MAX_FILE_SIZE_MB = 40;
     private string $domainUrl;
     private string $path;
+    private string $sitemapUrl;
 
     public function __construct(string $domainUrl, string $path)
     {
         $this->domainUrl = $domainUrl;
         $this->path = $path;
+        $parts = explode('/', $this->path);
+        $this->sitemapUrl = $this->domainUrl . '/' . $parts[count($parts) - 1];
     }
 
     public function generate()
@@ -179,15 +182,13 @@ class Sitemap
         $this->saveUrls($this->path, $fileName, $filesUrls);
         $indexesUrls = $this->getFilesUrls(
             $this->getDirectoryFiles($this->path),
-            ['/' . $fileName . '.xml']
+            [$this->sitemapUrl . '/' . $fileName . '.xml']
         );
         if (count($indexesUrls) > 1) {
             $this->saveUrls($this->path, $fileName, $indexesUrls, false);
         }
 
-        $siteMapIndexUrl = $this->domainUrl . '/sitemaps/' . $fileName . '.xml';
-
-        return $siteMapIndexUrl;
+        return $this->sitemapUrl . $fileName . '.xml';
     }
 
     private function getFilesUrls(array $paths, array $excludes = []): array
