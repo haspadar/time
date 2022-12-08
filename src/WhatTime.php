@@ -66,6 +66,46 @@ class WhatTime
         }
     }
 
+    public static function getUrlsCount(): int
+    {
+        return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE url <> ""');
+    }
+
+    public static function getUrls(int $limit, int $offset): array
+    {
+        return \DB::query('SELECT * FROM urls WHERE url <> "" LIMIT %d OFFSET %d', $limit, $offset);
+    }
+
+    public static function getStatesCount(): int
+    {
+        return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE state <> "" AND city = ""');
+    }
+
+    public static function getStates(int $limit, int $offset): array
+    {
+        return \DB::query('SELECT * FROM urls WHERE state <> "" AND city = "" LIMIT %d OFFSET %d', $limit, $offset);
+    }
+
+    public static function getCountriesCount(): int
+    {
+        return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE country <> "" AND state = "" AND city = ""');
+    }
+
+    public static function getCountries(int $limit, int $offset): array
+    {
+        return \DB::query('SELECT * FROM urls WHERE country <> "" AND state = "" AND city = "" LIMIT %d OFFSET %d', $limit, $offset);
+    }
+
+    public static function getCitiesCount(): int
+    {
+        return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE city <> ""');
+    }
+
+    public static function getCities(int $limit, int $offset): array
+    {
+        return \DB::query('SELECT * FROM urls WHERE city <> "" LIMIT %d OFFSET %d', $limit, $offset);
+    }
+
     public static function getDifferenceInHours(Time $bigTime, Time $smallTime): int
     {
         return ($bigTime->getDateTime()->getOffset() - $smallTime->getDateTime()->getOffset()) / 3600;
