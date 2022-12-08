@@ -33,11 +33,11 @@ class Sitemap
             fn($limit, $offset) => WhatTime::getStates($limit, $offset),
             $this->path . '/states'
         );
-        $this->generateLocationCombinationUrls(
-            WhatTime::getCountriesCount(),
-            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
-            $this->path . '/countries'
-        );
+//        $this->generateLocationCombinationUrls(
+//            WhatTime::getCountriesCount(),
+//            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
+//            $this->path . '/countries'
+//        );
         $siteMapIndexUrl = $this->generateIndexes();
         $executionTime->end();
         $this->log('Generated sitemap ' . $siteMapIndexUrl . ' for ' . $executionTime->get());
