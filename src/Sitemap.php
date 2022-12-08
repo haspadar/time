@@ -23,11 +23,11 @@ class Sitemap
             $this->domainUrl,
             $this->domainUrl . '/compare'
         ], $this->path . '/static');
-        $this->generateLocationCombinationUrls(
-            WhatTime::getCitiesCount(),
-            fn($limit, $offset) => WhatTime::getCities($limit, $offset),
-            $this->path . '/cities'
-        );
+//        $this->generateLocationCombinationUrls(
+//            WhatTime::getCitiesCount(),
+//            fn($limit, $offset) => WhatTime::getCities($limit, $offset),
+//            $this->path . '/cities'
+//        );
         $this->generateLocationCombinationUrls(
             WhatTime::getStatesCount(),
             fn($limit, $offset) => WhatTime::getStates($limit, $offset),
@@ -57,7 +57,7 @@ class Sitemap
     {
         $urlsCount = WhatTime::getUrlsCount();
         $limit = 1000;
-        for ($locationsOffset = 0; $locationsOffset <= min($locationsCount - $limit, 0); $locationsOffset++) {
+        for ($locationsOffset = 0; $locationsOffset <= $locationsCount; $locationsOffset++) {
             $locations = $locationsCallback($limit, $locationsOffset);
             $this->generateLocationFiles($locations, $path);
             foreach ($locations as $location) {
