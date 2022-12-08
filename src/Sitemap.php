@@ -47,10 +47,10 @@ class Sitemap
     {
         $chunks = array_chunk($urls, $this->getMaxFileLinks());
         foreach ($chunks as $chunkKey => $chunk) {
-            $this->saveUrls($this->path . $path, $chunkKey + 1, $chunk);
+            $this->saveUrls($path, $chunkKey + 1, $chunk);
         }
 
-        $this->saveUrls($this->path . $path, $chunkKey + 1, $chunk);
+        $this->saveUrls($path, $chunkKey + 1, $chunk);
     }
 
     private function generateLocationCombinationUrls(int $locationsCount, $locationsCallback, string $path)
