@@ -2,52 +2,62 @@
 
 namespace WhatTime;
 
+use http\Env\Request;
+
 class Sitemap
 {
     const MAX_FILE_LINKS = 40000;
     const MAX_FILE_SIZE_MB = 40;
     private string $domainUrl;
     private string $path;
-    private string $sitemapUrl;
+    private string $tmpPath;
 
     public function __construct(string $domainUrl, string $path)
     {
         $this->domainUrl = $domainUrl;
         $this->path = $path;
-        $parts = explode('/', $this->path);
-        $this->sitemapUrl = $this->domainUrl . '/' . $parts[count($parts) - 1];
+        $this->tmpPath = $path . '-tmp';
     }
 
     public function generate()
     {
         $executionTime = new ExecutionTime();
         $executionTime->start();
+        $this->removeTmpDirectory();
         $this->generateStaticFile([
             $this->domainUrl,
             $this->domainUrl . '/compare'
-        ], $this->path . '/static');
-//        $this->generateLocationCombinationUrls(
-//            WhatTime::getCitiesCount(),
-//            fn($limit, $offset) => WhatTime::getCities($limit, $offset),
-//            $this->path . '/cities'
-//        );
+        ], $this->tmpPath . '/static');
+        $this->generateLocationCombinationUrls(
+            WhatTime::getCitiesCount(),
+            fn($limit, $offset) => WhatTime::getCities($limit, $offset),
+            WhatTime::getUrlsCount(),
+            fn($limit, $offset) => WhatTime::getUrls($limit, $offset),
+            $this->tmpPath . '/cities'
+        );
         $this->generateLocationCombinationUrls(
             WhatTime::getStatesCount(),
             fn($limit, $offset) => WhatTime::getStates($limit, $offset),
-            $this->path . '/states'
+            WhatTime::getUrlsCount(),
+            fn($limit, $offset) => WhatTime::getUrls($limit, $offset),
+            $this->tmpPath . '/states'
         );
-//        $this->generateLocationCombinationUrls(
-//            WhatTime::getCountriesCount(),
-//            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
-//            $this->path . '/countries'
-//        );
+        $this->generateLocationCombinationUrls(
+            WhatTime::getCountriesCount(),
+            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
+            WhatTime::getUrlsCount(),
+            fn($limit, $offset) => WhatTime::getUrls($limit, $offset),
+            $this->tmpPath . '/countries'
+        );
         $siteMapIndexUrl = $this->generateIndexes();
+        $this->renameDirectories();
         $executionTime->end();
         $this->log('Generated sitemap ' . $siteMapIndexUrl . ' for ' . $executionTime->get());
     }
 
     private function generateStaticFile(array $urls, string $path)
     {
+        $this->log('Generating1 static file ' . $path);
         $chunks = array_chunk($urls, $this->getMaxFileLinks());
         foreach ($chunks as $chunkKey => $chunk) {
             $this->saveUrls($path, $chunkKey + 1, $chunk);
@@ -56,49 +66,49 @@ class Sitemap
         $this->saveUrls($path, $chunkKey + 1, $chunk);
     }
 
-    private function generateLocationCombinationUrls(int $locationsCount, $locationsCallback, string $path)
-    {
-        $urlsCount = WhatTime::getUrlsCount();
+    private function generateLocationCombinationUrls(
+        int $leftLocationsCount,
+        callable $leftLocationsCallback,
+        int $rightLocationsCount,
+        callable $rightLocationsCallback,
+        string   $path
+    ) {
         $limit = 1000;
-        for ($locationsOffset = 0; $locationsOffset <= $locationsCount; $locationsOffset++) {
-            $locations = $locationsCallback($limit, $locationsOffset);
-            $this->generateLocationFiles($locations, $path);
-            foreach ($locations as $location) {
-                for ($urlsOffset = 0; $urlsOffset <= min($urlsCount - $limit, 0); $urlsOffset++) {
+        $locationsChunkId = 0;
+        for ($leftLocationsOffset = 0; $leftLocationsOffset <= $leftLocationsCount; $leftLocationsOffset += $limit) {
+            $leftLocations = $leftLocationsCallback($limit, $leftLocationsOffset);
+            $this->generateLocationFiles($leftLocations, $path, ++$locationsChunkId);
+            foreach ($leftLocations as $leftLocation) {
+                $comparesChunkId = 0;
+                for ($rightLocationsOffset = 0; $rightLocationsOffset <= $rightLocationsCount; $rightLocationsOffset += $limit) {
                     $compares = array_filter(
-                        WhatTime::getUrls($limit, $urlsOffset),
-                        fn($url) => $location['id'] != $url['id']
+                        $rightLocationsCallback($limit, $rightLocationsOffset),
+                        fn($url) => $leftLocation['id'] != $url['id']
                     );
-                    $this->generateComparesFiles($location, $compares, $path . '/' . $location['url'] . '_compares');
+                    $this->generateComparesFiles($leftLocation, $compares, $path . '/' . $leftLocation['url'] . '_compares', ++$comparesChunkId);
                 }
             }
         }
     }
 
-    private function generateComparesFiles(array $location, array $compares, string $path)
+    private function generateComparesFiles(array $location, array $compares, string $path, int $chunkId)
     {
         $urls = [];
         foreach ($compares as $compare) {
             $urls[] = $this->domainUrl . '/' . $location['url'] . '/' . $compare['url'];
         }
 
-        $chunks = array_chunk($urls, $this->getMaxFileLinks());
-        foreach ($chunks as $chunkKey => $chunk) {
-            $this->saveUrls($path, $chunkKey + 1, $chunk);
-        }
+        $this->saveUrls($path, $chunkId, $urls);
     }
 
-    private function generateLocationFiles(array $locations, string $path)
+    private function generateLocationFiles(array $locations, string $path, int $chunkId)
     {
         $urls = [];
         foreach ($locations as $location) {
             $urls[] = $this->domainUrl . '/' . $location['url'];
         }
 
-        $chunks = array_chunk($urls, $this->getMaxFileLinks());
-        foreach ($chunks as $chunkKey => $chunk) {
-            $this->saveUrls($path, $chunkKey + 1, $chunk);
-        }
+        $this->saveUrls($path, $chunkId, $urls);
     }
 
     private function saveUrls(string $path, string $fileName, array $urls, bool $checkSize = true)
@@ -176,28 +186,31 @@ class Sitemap
         $fileNameParts = array_values(array_filter(explode('/', $this->path)));
         $fileName = $fileNameParts[count($fileNameParts) - 1];
         $filesUrls = $this->getFilesUrls(
-            $this->getDirectoryRecursiveFiles($this->path),
+            $this->getDirectoryRecursiveFiles($this->tmpPath),
             ['/' . $fileName . '.xml']
         );
-        $this->saveUrls($this->path, $fileName, $filesUrls);
+        $this->saveUrls($this->tmpPath, $fileName, $filesUrls);
         $indexesUrls = $this->getFilesUrls(
-            $this->getDirectoryFiles($this->path),
-            [$this->sitemapUrl . '/' . $fileName . '.xml']
+            $this->getDirectoryFiles($this->tmpPath),
+            ['/' . $fileName . '.xml']
         );
         if (count($indexesUrls) > 1) {
-            $this->saveUrls($this->path, $fileName, $indexesUrls, false);
+            $this->saveUrls($this->tmpPath, $fileName, $indexesUrls, false);
         }
 
-        return $this->sitemapUrl . $fileName . '.xml';
+        $siteMapIndexUrl = $this->domainUrl . '/' . $this->getTmpDirectoryName() . '/' . $fileName . '.xml';
+
+        return $siteMapIndexUrl;
     }
 
     private function getFilesUrls(array $paths, array $excludes = []): array
     {
         $filesUrls = [];
         foreach ($paths as $path) {
-            $parts = explode($this->path, $path);
+            $parts = explode($this->tmpPath, $path);
             if (!in_array($parts[1], $excludes)) {
-                $filesUrls[] = $this->domainUrl . '/' . $parts[1];
+                $filesUrls[] = $this->domainUrl . '/' . $this->getRealDirectoryName() . $parts[1];
+//                $filesUrls[] = $this->domainUrl . '/' . $this->getTmpDirectoryName() . $parts[1];
             }
         }
 
@@ -216,6 +229,33 @@ class Sitemap
 
     private function log(string $message): void
     {
-        echo '[' . (new \DateTime())->format('Y-m-d H:i:s') . '] ' . $message . PHP_EOL; 
+        echo '[' . (new \DateTime())->format('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
+    }
+
+    private function removeTmpDirectory(): void
+    {
+        system("rm -rf " . escapeshellarg($this->tmpPath));
+        $this->log('Removed ' . $this->tmpPath);
+    }
+
+    private function getRealDirectoryName(): string
+    {
+        $directoryParts = explode('/', $this->path);
+
+        return $directoryParts[count($directoryParts) - 1];
+    }
+
+    private function getTmpDirectoryName(): string
+    {
+        $tmpDirectoryParts = explode('/', $this->tmpPath);
+
+        return $tmpDirectoryParts[count($tmpDirectoryParts) - 1];
+    }
+
+    private function renameDirectories()
+    {
+        system("rm -rf " . escapeshellarg($this->path));
+        system("mv " . escapeshellarg($this->tmpPath) . ' ' . escapeshellarg($this->path));
+        $this->log('Renamed ' . $this->tmpPath . ' to ' . $this->path);
     }
 }
