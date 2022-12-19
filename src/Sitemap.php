@@ -12,6 +12,8 @@ class Sitemap
     private string $path;
     private string $tmpPath;
 
+    private int $combinationIterator = 0;
+
     public function __construct(string $domainUrl, string $path)
     {
         $this->domainUrl = $domainUrl;
@@ -96,6 +98,7 @@ class Sitemap
         $urls = [];
         foreach ($compares as $compare) {
             $urls[] = $this->domainUrl . '/' . $location['url'] . '/' . $compare['url'];
+            $this->log(++$this->combinationIterator . '/19.332.260.640');
         }
 
         $this->saveUrls($path, $chunkId, $urls);
