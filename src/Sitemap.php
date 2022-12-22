@@ -2,8 +2,6 @@
 
 namespace WhatTime;
 
-use http\Env\Request;
-
 class Sitemap
 {
     const MAX_FILE_LINKS = 40000;
@@ -13,15 +11,54 @@ class Sitemap
     private string $tmpPath;
 
     private int $combinationIterator = 0;
+    /**
+     * @var array
+     */
+    private array $limitedCountries;
+
 
     public function __construct(string $domainUrl, string $path)
     {
         $this->domainUrl = $domainUrl;
         $this->path = $path;
         $this->tmpPath = $path . '-tmp';
+        $this->limitedCountries = ['Luxembourg', 'Singapore', 'Ireland', 'Qatar', 'Switzerland', 'Norway', 'United States', 'Brunei', 'Hong Kong', 'Denmark', 'United Arab Emirates', 'San Marino', 'Netherlands', 'Macau', 'Taiwan', 'Iceland', 'Austria', 'Sweden', 'Germany', 'Australia', 'Belgium', 'Finland', 'Bahrain', 'Canada'];
     }
 
-    public function generate()
+    public function generateDb()
+    {
+        $executionTime = new ExecutionTime();
+        $executionTime->start();
+        $this->generateStaticFile([
+            $this->domainUrl,
+            $this->domainUrl . '/compare'
+        ], $this->tmpPath . '/static');
+        $this->generateLocationCombinationUrls(
+            WhatTime::getCitiesCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+            $this->tmpPath . '/cities'
+        );
+        $this->generateLocationCombinationUrls(
+            WhatTime::getStatesCount(),
+            fn($limit, $offset) => WhatTime::getStates($limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+            $this->tmpPath . '/states'
+        );
+        $this->generateLocationCombinationUrls(
+            WhatTime::getCountriesCount(),
+            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+            $this->tmpPath . '/countries'
+        );
+        $executionTime->end();
+        $this->log('Generated sitemap in DB for ' . $executionTime->get());
+    }
+
+    public function generateFiles()
     {
         $executionTime = new ExecutionTime();
         $executionTime->start();
@@ -31,24 +68,24 @@ class Sitemap
             $this->domainUrl . '/compare'
         ], $this->tmpPath . '/static');
         $this->generateLocationCombinationUrls(
-            WhatTime::getCitiesCount(),
-            fn($limit, $offset) => WhatTime::getCities($limit, $offset),
-            WhatTime::getUrlsCount(),
-            fn($limit, $offset) => WhatTime::getUrls($limit, $offset),
+            WhatTime::getCitiesCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
             $this->tmpPath . '/cities'
         );
         $this->generateLocationCombinationUrls(
             WhatTime::getStatesCount(),
             fn($limit, $offset) => WhatTime::getStates($limit, $offset),
-            WhatTime::getUrlsCount(),
-            fn($limit, $offset) => WhatTime::getUrls($limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
             $this->tmpPath . '/states'
         );
         $this->generateLocationCombinationUrls(
             WhatTime::getCountriesCount(),
             fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
-            WhatTime::getUrlsCount(),
-            fn($limit, $offset) => WhatTime::getUrls($limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
             $this->tmpPath . '/countries'
         );
         $siteMapIndexUrl = $this->generateIndexes();
@@ -59,7 +96,7 @@ class Sitemap
 
     private function generateStaticFile(array $urls, string $path)
     {
-        $this->log('Generating1 static file ' . $path);
+        $this->log('Generating static file ' . $path);
         $chunks = array_chunk($urls, $this->getMaxFileLinks());
         foreach ($chunks as $chunkKey => $chunk) {
             $this->saveUrls($path, $chunkKey + 1, $chunk);

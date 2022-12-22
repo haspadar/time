@@ -2,7 +2,6 @@
 
 namespace WhatTime;
 
-use http\Encoding\Stream\Debrotli;
 use MaxMind\Db\Reader;
 
 class WhatTime
@@ -66,13 +65,21 @@ class WhatTime
         }
     }
 
-    public static function getUrlsCount(): int
+    public static function getUrlsCount(array $countries): int
     {
+        if ($countries) {
+            return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE url <> "" AND country IN %ls', $countries);
+        }
+
         return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE url <> ""');
     }
 
-    public static function getUrls(int $limit, int $offset): array
+    public static function getUrls(array $countries, int $limit, int $offset): array
     {
+        if ($countries) {
+            return \DB::query('SELECT * FROM urls WHERE url <> "" AND country IN %ls LIMIT %d OFFSET %d', $countries, $limit, $offset);
+        }
+
         return \DB::query('SELECT * FROM urls WHERE url <> "" LIMIT %d OFFSET %d', $limit, $offset);
     }
 
@@ -96,14 +103,31 @@ class WhatTime
         return \DB::query('SELECT * FROM urls WHERE country <> "" AND state = "" AND city = "" LIMIT %d OFFSET %d', $limit, $offset);
     }
 
-    public static function getCitiesCount(): int
+    public static function getCitiesCount($countries = []): int
     {
+        if ($countries) {
+            return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE city <> "" AND country IN %ls', $countries);
+        }
+
         return \DB::queryFirstField('SELECT COUNT(*) FROM urls WHERE city <> ""');
     }
 
-    public static function getCities(int $limit, int $offset): array
+    public static function getCities($countries, int $limit, int $offset): array
     {
-        return \DB::query('SELECT * FROM urls WHERE city <> "" LIMIT %d OFFSET %d', $limit, $offset);
+        if ($countries) {
+            return \DB::query(
+                'SELECT * FROM urls WHERE city <> "" AND country IN %ls LIMIT %d OFFSET %d',
+                $countries,
+                $limit,
+                $offset
+            );
+        }
+
+        return \DB::query(
+            'SELECT * FROM urls WHERE city <> "" LIMIT %d OFFSET %d',
+            $limit,
+            $offset
+        );
     }
 
     public static function getDifferenceInHours(Time $bigTime, Time $smallTime): int
