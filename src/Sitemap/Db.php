@@ -97,7 +97,7 @@ class Db
                     );
                     $this->save(
                         array_map(fn($location) => '/compare/' . $location['url'] . '/' . $leftLocation['url'], $compares),
-                        [$label, 'combination']
+                        [$label, 'combination', $leftLocation['url']]
                     );
                 }
             }
