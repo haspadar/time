@@ -12,25 +12,24 @@ class Db
      * @var array
      */
     private array $limitedCountries;
+    private int $count;
 
 
     public function __construct()
     {
+        $this->count = 0;
         $this->limitedCountries = [
             'Luxembourg',
             'Singapore',
             'Ireland',
-            'Qatar',
             'Switzerland',
             'Norway',
             'United States',
-            'Brunei',
             'Hong Kong',
             'Denmark',
             'United Arab Emirates',
             'San Marino',
             'Netherlands',
-            'Macau',
             'Taiwan',
             'Iceland',
             'Austria',
@@ -39,7 +38,6 @@ class Db
             'Australia',
             'Belgium',
             'Finland',
-            'Bahrain',
             'Canada'
         ];
     }
@@ -73,6 +71,7 @@ class Db
         );
         $executionTime->end();
         $this->log('Generated sitemap in DB for ' . $executionTime->get());
+        $this->log('Count: ' . $this->count);
     }
 
     private function generateCombinations(
@@ -108,13 +107,14 @@ class Db
     {
         $this->log('Inserting ' . count($urls) . ' urls with labels ' . implode(', ', $labels) . '...');
         foreach ($urls as $url) {
-            \DB::insert('sitemap', [
-                'url' => $url,
-                'label1' => $labels[0] ?? '',
-                'label2' => $labels[1] ?? '',
-                'label3' => $labels[2] ?? '',
-                'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
-            ]);
+            $this->count++;
+//            \DB::insert('sitemap', [
+//                'url' => $url,
+//                'label1' => $labels[0] ?? '',
+//                'label2' => $labels[1] ?? '',
+//                'label3' => $labels[2] ?? '',
+//                'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
+//            ]);
         }
     }
 
