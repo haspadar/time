@@ -48,6 +48,11 @@ class Db
         $executionTime->start();
         $this->truncate();
         $this->save(['/compare', '/'], ['static']);
+        var_dump(WhatTime::getCitiesCount($this->limitedCountries), 'getCitiesCount');
+        var_dump(WhatTime::getStatesCount(), 'WhatTime::getStatesCount()');
+        var_dump(WhatTime::getUrlsCount($this->limitedCountries), 'WhatTime::getUrlsCount($this->limitedCountries)');
+        var_dump(WhatTime::getCountriesCount(), 'WhatTime::getCountriesCount()');
+        exit;
         $this->generateCombinations(
             WhatTime::getCitiesCount($this->limitedCountries),
             fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
