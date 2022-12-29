@@ -19,26 +19,26 @@ class Db
     {
         $this->count = 0;
         $this->limitedCountries = [
-            'Luxembourg',
-            'Singapore',
-            'Ireland',
-            'Switzerland',
-            'Norway',
+//            'Luxembourg',
+//            'Singapore',
+//            'Ireland',
+//            'Switzerland',
+//            'Norway',
             'United States',
-            'Hong Kong',
-            'Denmark',
-            'United Arab Emirates',
-            'San Marino',
-            'Netherlands',
-            'Taiwan',
-            'Iceland',
-            'Austria',
-            'Sweden',
-            'Germany',
-            'Australia',
-            'Belgium',
-            'Finland',
-            'Canada'
+//            'Hong Kong',
+//            'Denmark',
+//            'United Arab Emirates',
+//            'San Marino',
+//            'Netherlands',
+//            'Taiwan',
+//            'Iceland',
+//            'Austria',
+//            'Sweden',
+//            'Germany',
+//            'Australia',
+//            'Belgium',
+//            'Finland',
+//            'Canada'
         ];
     }
 
@@ -48,13 +48,13 @@ class Db
         $executionTime->start();
         $this->truncate();
         $this->save(['/compare', '/'], ['static']);
-//        $this->generateCombinations(
-//            WhatTime::getCitiesCount($this->limitedCountries),
-//            fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
-//            WhatTime::getUrlsCount($this->limitedCountries),
-//            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
-//            'city-combination'
-//        );
+        $this->generateCombinations(
+            WhatTime::getCitiesCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+            'city-combination'
+        );
         $this->generateCombinations(
             WhatTime::getStatesCount(),
             fn($limit, $offset) => WhatTime::getStates($limit, $offset),
@@ -62,13 +62,13 @@ class Db
             fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
             'state-combination'
         );
-//        $this->generateCombinations(
-//            WhatTime::getCountriesCount(),
-//            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
-//            WhatTime::getUrlsCount($this->limitedCountries),
-//            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
-//            'country-combination'
-//        );
+        $this->generateCombinations(
+            WhatTime::getCountriesCount(),
+            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
+            WhatTime::getUrlsCount($this->limitedCountries),
+            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+            'country-combination'
+        );
         $executionTime->end();
         $this->log('Generated sitemap in DB for ' . $executionTime->get());
         $this->log('Count: ' . $this->count);
