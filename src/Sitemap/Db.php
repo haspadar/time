@@ -62,13 +62,13 @@ class Db
             fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
             'state-combination'
         );
-        $this->generateCombinations(
-            WhatTime::getCountriesCount(),
-            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
-            WhatTime::getUrlsCount($this->limitedCountries),
-            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
-            'country-combination'
-        );
+//        $this->generateCombinations(
+//            WhatTime::getCountriesCount(),
+//            fn($limit, $offset) => WhatTime::getCountries($limit, $offset),
+//            WhatTime::getUrlsCount($this->limitedCountries),
+//            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+//            'country-combination'
+//        );
         $executionTime->end();
         $this->log('Generated sitemap in DB for ' . $executionTime->get());
         $this->log('Count: ' . $this->count);
