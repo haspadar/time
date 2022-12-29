@@ -48,18 +48,13 @@ class Db
         $executionTime->start();
         $this->truncate();
         $this->save(['/compare', '/'], ['static']);
-        var_dump(WhatTime::getCitiesCount($this->limitedCountries), 'getCitiesCount');
-        var_dump(WhatTime::getStatesCount(), 'WhatTime::getStatesCount()');
-        var_dump(WhatTime::getUrlsCount($this->limitedCountries), 'WhatTime::getUrlsCount($this->limitedCountries)');
-        var_dump(WhatTime::getCountriesCount(), 'WhatTime::getCountriesCount()');
-        exit;
-        $this->generateCombinations(
-            WhatTime::getCitiesCount($this->limitedCountries),
-            fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
-            WhatTime::getUrlsCount($this->limitedCountries),
-            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
-            'city-combination'
-        );
+//        $this->generateCombinations(
+//            WhatTime::getCitiesCount($this->limitedCountries),
+//            fn($limit, $offset) => WhatTime::getCities($this->limitedCountries, $limit, $offset),
+//            WhatTime::getUrlsCount($this->limitedCountries),
+//            fn($limit, $offset) => WhatTime::getUrls($this->limitedCountries, $limit, $offset),
+//            'city-combination'
+//        );
         $this->generateCombinations(
             WhatTime::getStatesCount(),
             fn($limit, $offset) => WhatTime::getStates($limit, $offset),
@@ -113,13 +108,13 @@ class Db
         $this->log('Inserting ' . count($urls) . ' urls with labels ' . implode(', ', $labels) . '...');
         foreach ($urls as $url) {
             $this->count++;
-//            \DB::insert('sitemap', [
-//                'url' => $url,
-//                'label1' => $labels[0] ?? '',
-//                'label2' => $labels[1] ?? '',
-//                'label3' => $labels[2] ?? '',
-//                'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
-//            ]);
+            \DB::insert('sitemap', [
+                'url' => $url,
+                'label1' => $labels[0] ?? '',
+                'label2' => $labels[1] ?? '',
+                'label3' => $labels[2] ?? '',
+                'create_time' => (new \DateTime())->format('Y-m-d H:i:s')
+            ]);
         }
     }
 
