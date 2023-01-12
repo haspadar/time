@@ -74,6 +74,28 @@ class Db
         $this->log('Count: ' . $this->count);
     }
 
+    public function getCount(array $labels = []): int
+    {
+        $sql = 'SELECT COUNT(*) FROM sitemap';
+        if ($labels) {
+            $labelStatements = [];
+            foreach ($labels as $labelName => $labelValue) {
+                $labelStatements[] = $labelName . '="' . $labelValue . '"';
+            }
+
+            $sql .= ' WHERE ' . implode(' AND ', $labelStatements);
+        }
+
+        return \DB::queryFirstField($sql);
+    }
+
+
+
+    public function getUrls(int $limit, int $offset = 0): array
+    {
+        return \DB::query('SELECT * FROM sitemap LIMIT %d OFFSET %d', $limit, $offset);
+    }
+
     private function generateCombinations(
         int $leftLocationsCount,
         callable $leftLocationsCallback,
