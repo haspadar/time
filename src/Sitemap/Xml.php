@@ -48,7 +48,7 @@ class Xml
         $xml = new \SimpleXMLElement(
             '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"/>'
         );
-        for ($fileId = 1; $fileId <= $this->fileUrlsLimit; $fileId++) {
+        for ($fileId = 1; $fileId <= $this->filesCount; $fileId++) {
             $element = $xml->addChild('url');
             $element->addChild('loc', $this->baseUrl . '?file=' . $fileId);
             $element->addChild('lastmod', (new \DateTime())->format('Y-m-d'));
