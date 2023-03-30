@@ -171,6 +171,11 @@ class WhatTime
 
     private static function getCompareUrls(): array
     {
-        return array_values(array_filter(explode('/', $_SERVER['REQUEST_URI'])));
+        return array_values(
+            array_filter(
+                explode('/', $_SERVER['REQUEST_URI']),
+                fn($url) =>  $url && $url != 'compare'
+            )
+        );
     }
 }
