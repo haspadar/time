@@ -93,7 +93,8 @@ class Db
 
     public function getUrls(int $limit, int $offset = 0): array
     {
-        return \DB::query('SELECT * FROM sitemap LIMIT %d OFFSET %d', $limit, $offset);
+//        return \DB::query('SELECT * FROM sitemap LIMIT %d OFFSET %d', $limit, $offset);
+        return \DB::query('SELECT * FROM sitemap WHERE id > %d LIMIT %d', $offset, $limit);
     }
 
     private function generateCombinations(
